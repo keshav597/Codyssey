@@ -163,10 +163,10 @@ export function StudentProvider({ children }) {
   const completeLesson = useCallback(
     (lessonId, xpAmount = XP_REWARDS.LESSON_COMPLETE) => {
       setStudent((prev) => {
-        if (prev.completedLessonIds.includes(lessonId)) return prev;
+        const isNew = !prev.completedLessonIds.includes(lessonId);
         let next = {
           ...prev,
-          completedLessonIds: [...prev.completedLessonIds, lessonId],
+          completedLessonIds: isNew ? [...prev.completedLessonIds, lessonId] : prev.completedLessonIds,
           xp: addXP(prev.xp, xpAmount),
         };
         next = bumpStreak(next);
@@ -182,12 +182,12 @@ export function StudentProvider({ children }) {
   const completeQuest = useCallback(
     (questId) => {
       setStudent((prev) => {
-        if (prev.completedQuestIds.includes(questId)) return prev;
         const quest = questData.find((q) => q.id === questId);
         const xpAmount = quest ? quest.xp : XP_REWARDS.QUEST_COMPLETE;
+        const isNew = !prev.completedQuestIds.includes(questId);
         let next = {
           ...prev,
-          completedQuestIds: [...prev.completedQuestIds, questId],
+          completedQuestIds: isNew ? [...prev.completedQuestIds, questId] : prev.completedQuestIds,
           xp: addXP(prev.xp, xpAmount),
         };
         next = bumpStreak(next);

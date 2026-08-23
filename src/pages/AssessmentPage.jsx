@@ -20,7 +20,8 @@ export default function AssessmentPage() {
   const questId = location.state?.questId || null;
   const questTitle = location.state?.questTitle || 'Practice Quiz';
 
-  const questions = useMemo(() => getQuestionsForSkill(skillId, 5), [skillId]);
+  const [attemptKey, setAttemptKey] = useState(0);
+  const questions = useMemo(() => getQuestionsForSkill(skillId, 5), [skillId, attemptKey]);
 
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -31,6 +32,19 @@ export default function AssessmentPage() {
   const [finished, setFinished] = useState(false);
   const [xpAwarded, setXpAwarded] = useState(0);
   const [comboBonusEarned, setComboBonusEarned] = useState(0);
+
+  const handleReattempt = () => {
+    setAttemptKey((k) => k + 1);
+    setIndex(0);
+    setSelected(null);
+    setRevealed(false);
+    setCorrectCount(0);
+    setCombo(0);
+    setMaxCombo(0);
+    setFinished(false);
+    setXpAwarded(0);
+    setComboBonusEarned(0);
+  };
 
   if (questions.length === 0) {
     return (
@@ -90,6 +104,7 @@ export default function AssessmentPage() {
             comboBonus={comboBonusEarned}
             perfect={isPerfect}
             onContinue={() => navigate('/quests')}
+            onReattempt={handleReattempt}
           />
         </Card>
       </PageContainer>

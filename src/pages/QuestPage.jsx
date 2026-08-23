@@ -17,7 +17,7 @@ export default function QuestPage() {
   const filtered = questsWithStatus.filter((q) => filter === 'all' || q.type === filter);
 
   const handleStart = (quest) => {
-    if (quest.status !== 'available') return;
+    if (quest.status === 'locked') return;
     setNotice('');
     if (quest.type === 'learning') {
       navigate('/learn', { state: { skillId: quest.skillId } });
@@ -28,7 +28,9 @@ export default function QuestPage() {
       return;
     }
     if (quest.type === 'streak') {
-      if (student.streak.count >= quest.streakDays) {
+      if (quest.status === 'completed') {
+        setNotice(`Milestone completed! You're currently on a ${student.streak.count}-day streak.`);
+      } else if (student.streak.count >= quest.streakDays) {
         completeQuest(quest.id);
       } else {
         setNotice(`Keep learning! You're at a ${student.streak.count}-day streak — reach ${quest.streakDays} days to claim this quest.`);

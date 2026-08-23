@@ -28,13 +28,10 @@ export default function LearnPage() {
 
   const isCompleted = (id) => student.completedLessonIds.includes(id);
 
-  const handleFinishLesson = () => {
-    if (!isCompleted(activeLesson.id)) {
-      completeLesson(activeLesson.id, activeLesson.xp);
-    }
+  const handleFinishLesson = (rewardXP) => {
+    completeLesson(activeLesson.id, rewardXP);
     setActiveLesson(null);
   };
-
   return (
     <PageContainer title="Learn">
       <div className="skill-filter">

@@ -27,7 +27,13 @@ export default function QuestCard({ quest, onStart }) {
           disabled={quest.status === 'locked'}
           onClick={() => onStart(quest)}
         >
-          {quest.status === 'completed' ? 'Completed' : quest.status === 'locked' ? 'Locked' : 'Start Quest'}
+          {quest.status === 'locked'
+            ? 'Locked'
+            : quest.status === 'completed'
+            ? quest.type === 'streak'
+              ? 'Claimed ✓'
+              : 'Reattempt'
+            : 'Start Quest'}
         </Button>
       </div>
     </Card>
