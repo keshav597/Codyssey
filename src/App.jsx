@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 
 import LandingPage from './pages/LandingPage';
@@ -9,7 +9,6 @@ import Dashboard from './pages/Dashboard';
 import CodeversePage from './pages/CodeversePage';
 import LearnPage from './pages/LearnPage';
 import QuestPage from './pages/QuestPage';
-import SkillsPage from './pages/SkillsPage';
 import AssessmentPage from './pages/AssessmentPage';
 import RewardsPage from './pages/RewardsPage';
 import ProfilePage from './pages/ProfilePage';
@@ -17,9 +16,8 @@ import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 /**
- * App.jsx only configures routing + providers (providers live in main.jsx).
- * Protected routes redirect unauthenticated users to /signin, and users who
- * haven't finished onboarding get sent to /setup first.
+ * App.jsx — routing only. Providers live in main.jsx.
+ * Protected routes redirect unauthenticated users to /signin.
  */
 export default function App() {
   return (
@@ -34,7 +32,6 @@ export default function App() {
       <Route path="/learn" element={<ProtectedRoute><LearnPage /></ProtectedRoute>} />
       <Route path="/quests" element={<ProtectedRoute><QuestPage /></ProtectedRoute>} />
       <Route path="/quiz" element={<ProtectedRoute><AssessmentPage /></ProtectedRoute>} />
-      <Route path="/skills" element={<ProtectedRoute><SkillsPage /></ProtectedRoute>} />
       <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />

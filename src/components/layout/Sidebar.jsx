@@ -4,7 +4,6 @@ import {
   Rocket,
   BookOpen,
   Swords,
-  Layers,
   Award,
   User,
   Settings,
@@ -18,7 +17,6 @@ const NAV_ITEMS = [
   { to: '/codeverse', label: 'Codeverse', icon: Rocket },
   { to: '/learn', label: 'Learn', icon: BookOpen },
   { to: '/quests', label: 'Quests', icon: Swords },
-  { to: '/skills', label: 'Skills', icon: Layers },
   { to: '/rewards', label: 'Rewards', icon: Award },
   { to: '/profile', label: 'Profile', icon: User },
 ];

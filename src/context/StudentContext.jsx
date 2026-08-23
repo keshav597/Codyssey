@@ -253,6 +253,11 @@ export function StudentProvider({ children }) {
   // ---- Consume transient markers as real effects (not inside the setState
   // updater above, which must stay pure — see getLevelUpIfAny/applyBadgeUnlocks). ----
   useEffect(() => {
+    const theme = student.settings?.theme || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [student.settings?.theme]);
+
+  useEffect(() => {
     if (student.pendingBadgeUnlock) {
       setLastUnlockedBadge(student.pendingBadgeUnlock);
       setStudent((prev) => ({ ...prev, pendingBadgeUnlock: null }));

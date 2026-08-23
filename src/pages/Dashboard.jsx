@@ -4,6 +4,7 @@ import StreakCard from '../components/dashboard/StreakCard';
 import TodayPlan from '../components/dashboard/TodayPlan';
 import SkillOverview from '../components/dashboard/SkillOverview';
 import AchievementPreview from '../components/dashboard/AchievementPreview';
+import UniversityLeaderboard from '../components/dashboard/UniversityLeaderboard';
 import { useAuth } from '../hooks/useAuth';
 import { useProgress } from '../hooks/useProgress';
 import './pages.css';
@@ -32,7 +33,12 @@ export default function Dashboard() {
         <SkillOverview skills={skillsWithProgress} />
       </div>
 
+      <div style={{ marginBottom: 24 }}>
+        <UniversityLeaderboard userCollege={student.onboarding?.college} />
+      </div>
+
       <AchievementPreview badges={badges} />
     </PageContainer>
   );
 }
+
