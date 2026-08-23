@@ -1,7 +1,6 @@
 import CircularProgress from '../common/CircularProgress';
 import './codeverse.css';
 
-/** Overall-progress readout shown above the Codeverse chain, with a glowing ring. */
 export default function CodeverseProgress({ skills }) {
   const totalPercent = Math.round(
     skills.reduce((sum, s) => sum + s.progress, 0) / skills.length
