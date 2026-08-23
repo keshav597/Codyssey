@@ -2,14 +2,14 @@
 .lesson-card__top { display: flex; justify-content: space-between; align-items: center; }
 .lesson-content { display: flex; flex-direction: column; gap: 18px; }
 .lesson-content__code {
-  background: #060911;
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 16px;
   font-family: var(--font-mono);
   font-size: 13px;
   overflow-x: auto;
-  color: #b7c3ff;
+  color: var(--primary);
   white-space: pre;
 }
 .lesson-content__topics { display: flex; gap: 8px; flex-wrap: wrap; }

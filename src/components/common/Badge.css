@@ -11,7 +11,8 @@
   font-family: var(--font-mono);
 }
 .badge-chip--default { background: var(--surface-hover); color: var(--text-secondary); }
-.badge-chip--primary { background: rgba(91, 110, 245, 0.16); color: #a3b0ff; }
+.badge-chip--primary { background: rgba(91, 110, 245, 0.16); color: var(--primary); }
+.badge-chip--secondary { background: rgba(192, 38, 211, 0.14); color: var(--secondary); }
 .badge-chip--success { background: rgba(52, 211, 153, 0.16); color: var(--success); }
 .badge-chip--xp { background: rgba(251, 191, 36, 0.16); color: var(--xp); }
 .badge-chip--streak { background: rgba(251, 122, 60, 0.16); color: var(--streak); }

@@ -4,3 +4,19 @@
 .quest-card__title { font-size: 16px; margin: 2px 0 6px; }
 .quest-card__stars { color: var(--xp); letter-spacing: 2px; }
 .quest-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+/* Filter tabs — shared with QuestPage */
+.skill-filter { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.skill-filter__btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.skill-filter__btn:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.skill-filter__btn--active { background: var(--primary); color: #fff; border-color: var(--primary); }

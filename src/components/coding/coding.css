@@ -1,11 +1,11 @@
 .code-editor {
-  background: #060911;
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 18px;
   font-family: var(--font-mono);
   font-size: 13px;
-  color: #b7c3ff;
+  color: var(--primary);
   white-space: pre;
   overflow-x: auto;
 }

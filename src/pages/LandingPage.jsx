@@ -3,7 +3,15 @@ import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import './pages.css';
 
-const LOOP = ['LEARN', 'PRACTICE', 'QUEST', 'XP', 'LEVEL UP', 'UNLOCK', 'BADGE'];
+const LOOP = [
+  { step: '01', label: 'Learn',    icon: '📖', color: '#6366f1' },
+  { step: '02', label: 'Practice', icon: '💻', color: '#8b5cf6' },
+  { step: '03', label: 'Quest',    icon: '⚔️',  color: '#c026d3' },
+  { step: '04', label: 'XP',       icon: '⚡', color: '#f59e0b' },
+  { step: '05', label: 'Level Up', icon: '🚀', color: '#22d3ee' },
+  { step: '06', label: 'Unlock',   icon: '🔓', color: '#10b981' },
+  { step: '07', label: 'Badge',    icon: '🏆', color: '#fb923c' },
+];
 
 const FEATURES = [
   { icon: '🚀', title: 'Codeverse', body: 'A living galaxy that visualizes what you\'ve unlocked — HTML, CSS, JavaScript, React — one node at a time.' },
@@ -70,11 +78,17 @@ export default function LandingPage() {
         </div>
 
         <div className="landing-loop">
-          {LOOP.map((step, i) => (
-            <span key={step} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span className="landing-loop__step">{step}</span>
-              {i < LOOP.length - 1 && <span>→</span>}
-            </span>
+          {LOOP.map((s, i) => (
+            <div key={s.step} className="landing-loop__item">
+              <div className="landing-loop__card">
+                <span className="landing-loop__num">{s.step}</span>
+                <span className="landing-loop__icon">{s.icon}</span>
+                <span className="landing-loop__label">{s.label}</span>
+              </div>
+              {i < LOOP.length - 1 && (
+                <span className="landing-loop__arrow">›</span>
+              )}
+            </div>
           ))}
         </div>
 
