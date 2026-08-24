@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigation } from '../hooks/useNavigation';
 import PageContainer from '../components/layout/PageContainer';
 import QuestList from '../components/quests/QuestList';
 import QuestDetails from '../components/quests/QuestDetails';
@@ -9,7 +9,7 @@ const TYPE_FILTERS = ['all', 'daily', 'learning', 'quiz', 'challenge', 'streak']
 
 export default function QuestPage() {
   const { questsWithStatus, student, completeQuest } = useProgress();
-  const navigate = useNavigate();
+  const { navigate } = useNavigation();
   const [filter, setFilter] = useState('all');
   const [pendingQuest, setPendingQuest] = useState(null);
   const [notice, setNotice] = useState('');
@@ -20,7 +20,7 @@ export default function QuestPage() {
     if (quest.status === 'locked') return;
     setNotice('');
     if (quest.type === 'learning') {
-      navigate('/learn', { state: { skillId: quest.skillId } });
+      navigate('learn', { skillId: quest.skillId });
       return;
     }
     if (quest.type === 'quiz' || quest.type === 'challenge' || quest.type === 'daily') {
@@ -40,13 +40,11 @@ export default function QuestPage() {
 
   const confirmQuest = (quest) => {
     setPendingQuest(null);
-    navigate('/quiz', { 
-      state: { 
-        skillId: quest.skillId, 
-        questId: quest.id, 
-        questTitle: quest.title,
-        questionCount: quest.questionCount || (quest.type === 'daily' ? 3 : 5)
-      } 
+    navigate('quiz', {
+      skillId: quest.skillId,
+      questId: quest.id,
+      questTitle: quest.title,
+      questionCount: quest.questionCount || (quest.type === 'daily' ? 3 : 5),
     });
   };
 

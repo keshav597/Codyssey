@@ -10,10 +10,6 @@ import { getQuestionsForSkill } from '../../data/questions';
 import { getLessonsForSkill } from '../../data/lessons';
 import './learning.css';
 
-/**
- * Duolingo-style interactive lesson flow.
- * Mistakes reduce the XP reward.
- */
 export default function InteractiveLesson({
   lesson,
   alreadyCompleted,
@@ -52,21 +48,17 @@ export default function InteractiveLesson({
   const [mistakes, setMistakes] = useState(0);
   const [attemptKey, setAttemptKey] = useState(0);
 
-  // Calculate XP according to mistakes
   const getRewardXP = () => {
+    if (correctStreak === 0 && mistakes > 0) {
+      return 0;
+    }
     if (mistakes === 0) {
       return lesson.xp;
     }
-
     if (mistakes === 1) {
-      return Math.max(1, Math.round(lesson.xp * 0.75));
+      return Math.max(0, Math.round(lesson.xp * 0.50));
     }
-
-    if (mistakes === 2) {
-      return Math.max(1, Math.round(lesson.xp * 0.50));
-    }
-
-    return Math.max(1, Math.round(lesson.xp * 0.25));
+    return 0;
   };
 
   const rewardXP = getRewardXP();
@@ -100,7 +92,6 @@ export default function InteractiveLesson({
         onExit={onExit}
       />
 
-      {/* LEARN */}
       {currentStep === 'learn' && (
         <div className="lesson-content">
           <div>
@@ -136,7 +127,6 @@ export default function InteractiveLesson({
         </div>
       )}
 
-      {/* FILL BLANK */}
       {currentStep === 'fillBlank' && fillBlank && (
         <FillBlankExercise
           key={`fillBlank-${attemptKey}`}
@@ -145,7 +135,6 @@ export default function InteractiveLesson({
         />
       )}
 
-      {/* QUICK CHECK */}
       {currentStep === 'quickCheck' && quickCheck && (
         <QuickCheckStep
           key={`quickCheck-${attemptKey}`}
@@ -154,17 +143,14 @@ export default function InteractiveLesson({
         />
       )}
 
-      {/* COMPLETE */}
       {currentStep === 'complete' && (
         <div
           className="lesson-complete"
           style={{ position: 'relative' }}
         >
-          {/* Confetti only for perfect run */}
-          {mistakes === 0 &&
-            steps.length > 2 && (
-              <ConfettiBurst pieceCount={30} />
-            )}
+          {mistakes === 0 && steps.length > 2 && (
+            <ConfettiBurst pieceCount={30} />
+          )}
 
           <div className="lesson-complete__burst">
             {mistakes === 0 ? '🎉' : '👍'}
@@ -190,7 +176,6 @@ export default function InteractiveLesson({
             </p>
           )}
 
-          {/* XP Reward */}
           <p
             className="badge-chip badge-chip--xp"
             style={{
@@ -202,7 +187,6 @@ export default function InteractiveLesson({
             +{rewardXP} XP
           </p>
 
-          {/* Show full XP if mistakes happened */}
           {mistakes > 0 && (
             <p
               className="text-secondary"
@@ -215,7 +199,6 @@ export default function InteractiveLesson({
             </p>
           )}
 
-          {/* Attempt Again */}
           {mistakes > 0 && (
             <Button
               size="lg"
@@ -228,7 +211,6 @@ export default function InteractiveLesson({
             </Button>
           )}
 
-          {/* Claim XP */}
           <Button
             size="lg"
             fullWidth

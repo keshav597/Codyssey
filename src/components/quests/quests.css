@@ -5,7 +5,6 @@
 .quest-card__stars { color: #ffc23c; letter-spacing: 2px; }
 .quest-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
-/* Filter tabs — shared with QuestPage */
 .skill-filter { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .skill-filter__btn {
   padding: 8px 16px;

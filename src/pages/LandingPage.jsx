@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from '../components/common/Link';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
+import { useAuth } from '../hooks/useAuth';
 import './pages.css';
 
 const LOOP = [
@@ -34,74 +35,63 @@ const PREVIEW_NODES = [
   { icon: '🌍', name: 'HTML', state: 'completed' },
 ];
 
-const COLLABORATORS = [
-  { name: 'Forbes', sub: '' },
-  { name: 'ChainIDE', sub: 'Swift. Simple. Smart.' },
-  { name: 'Mask', sub: '' },
-  { name: 'JoyID', sub: '' },
-  { name: 'NERVAPE STUDIO', sub: '' },
-  { name: 'Flowverse NFT', sub: '' },
-  { name: 'DappRadar', sub: '' },
+const UNIVERSITIES = [
+  { name: 'Chitkara University', sub: 'Punjab & Himachal' },
+  { name: 'IIT Delhi', sub: 'New Delhi' },
+  { name: 'BITS Pilani', sub: 'Pilani & Goa' },
+  { name: 'DTU', sub: 'Delhi' },
+  { name: 'VIT Vellore', sub: 'Tamil Nadu' },
+  { name: 'Thapar Institute', sub: 'Patiala' },
+  { name: 'IIIT Hyderabad', sub: 'Telangana' },
 ];
 
-const INVESTORS = [
-  { name: 'animoca BRANDS', desc: '' },
-  { name: 'MatchA', desc: '' },
-  { name: 'Dapper', desc: '' },
-  { name: 'MN Capital', desc: '' },
-  { name: 'BONFIRE UNION', desc: '' },
-  { name: 'TESS VENTURES', desc: '' },
-  { name: 'FENBUSHI CAPITAL', desc: '' },
-  { name: 'HASHGLOBAL', desc: '' },
-  { name: 'Sky9 CAPITAL', desc: '' },
-  { name: 'SevenX Ventures', desc: '' },
-  { name: 'ArkStream Capital', desc: '' },
-  { name: 'PANONY', desc: '' },
+const PLATFORM_STATS = [
+  { value: '15,000+', label: 'Lessons Completed', variant: 'purple' },
+  { value: '45,000+', label: 'Quizzes Solved', variant: 'default' },
+  { value: '500+', label: 'Colleges Represented', variant: 'default' },
+  { value: '98%', label: 'Student Retention', variant: 'teal' },
 ];
 
-const ECO_STATS = [
-  { value: '102K+', label: 'AI Agents Deployed', variant: 'purple' },
-  { value: '3.3M+', label: 'Tasks Completed', variant: 'default' },
-  { value: '159K+', label: 'Tweets Generated', variant: 'default' },
-  { value: '24/7', label: 'Never Stops', variant: 'teal' },
+const OTHER_PLATFORMS_LIMITS = [
+  'Passive video lectures with no active hands-on coding practice',
+  'No instant mistake feedback or interactive explanations',
+  'Monotonous text without gamification, streaks, or levels',
+  'Confusing syllabus without clear step-by-step visual progression',
+  'No campus leaderboards to compete with college classmates',
+  'Generic certificates instead of verifiable skill achievement badges',
 ];
 
-const OTHER_AGENTS_LIMITS = [
-  'Single-use chatbots that forget conversations instantly',
-  'Manual triggers required for every task execution',
-  'Limited to text generation and basic web searches',
-  'No understanding of Web3 protocols or market dynamics',
-  'Work in isolation with no collaboration capabilities',
-  'Generic responses with no domain specialization',
-  'Require constant human oversight and manual interaction',
-];
-
-const WORLD3_ADVANTAGES = [
-  'Long-lived agents with persistent memory and continuous learning',
-  'True autonomous operation - deploy once, runs forever without supervision',
-  'Full Web3 execution: multi-chain transactions, DApp interactions, browser automation',
-  'Built-in Web3 World Model with deep knowledge of DeFi, NFTs, DAOs, and emerging protocols',
-  'Multi-agent collaboration with shared knowledge and coordinated task execution',
+const COODYSSEY_ADVANTAGES = [
+  'Interactive bite-sized coding lessons with instant feedback',
+  'Duolingo-style quizzes with XP rewards, levels, and daily streaks',
+  'Living Codeverse galaxy that lights up as you master skills',
+  'University leaderboards to represent your college and compete',
+  'Personalized learning paths tailored to your engineering goals',
 ];
 
 export default function LandingPage() {
+  const { currentUser } = useAuth();
+
   return (
     <div className="landing">
       <div className="landing-orb landing-orb--1" aria-hidden="true" />
       <div className="landing-orb landing-orb--2" aria-hidden="true" />
 
       <div className="container">
-        {/* Navigation */}
         <nav className="landing-nav glass">
           <div className="landing-nav__logo">
             <span className="landing-nav__mark">⚡</span> Codyssey
           </div>
-          <Link to="/signin">
-            <Button variant="ghost">Sign In</Button>
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Link to="signin">
+              <Button variant="ghost">Sign In</Button>
+            </Link>
+            <Link to="signup">
+              <Button size="sm">Get Started</Button>
+            </Link>
+          </div>
         </nav>
 
-        {/* Hero Section */}
         <section className="landing-hero">
           <p className="eyebrow landing-hero__eyebrow">Learn. Play. Build. Level Up.</p>
           <h1>
@@ -112,16 +102,15 @@ export default function LandingPage() {
             and watch your Codeverse light up as you master HTML, CSS, JavaScript, and React.
           </p>
           <div className="landing-hero__ctas">
-            <Link to="/signup">
+            <Link to="signup">
               <Button size="lg">START YOUR ODYSSEY 🚀</Button>
             </Link>
-            <Link to="/signin">
+            <Link to="signin">
               <Button size="lg" variant="secondary">I already have an account</Button>
             </Link>
           </div>
         </section>
 
-        {/* Key Stats Bar */}
         <div className="landing-stats">
           {STATS.map((s) => (
             <div className="landing-stat" key={s.label}>
@@ -131,11 +120,10 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Collaborators Row */}
         <section className="landing-collaborators-section">
-          <p className="landing-section-subtitle">Our collaborators</p>
+          <p className="landing-section-subtitle">Top Colleges & Universities on Codyssey</p>
           <div className="landing-collaborators-row">
-            {COLLABORATORS.map((c) => (
+            {UNIVERSITIES.map((c) => (
               <div key={c.name} className="collaborator-item">
                 <span className="collaborator-name">{c.name}</span>
                 {c.sub && <span className="collaborator-sub">{c.sub}</span>}
@@ -144,22 +132,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Investors Section */}
-        <section className="landing-investors-section glass">
-          <p className="eyebrow center-text">Trusted by leading investors driving the future of Web3.</p>
-          <h2 className="landing-investors-title">The best investors trust WORLD3</h2>
-          
-          <div className="landing-investors-grid">
-            {INVESTORS.map((inv) => (
-              <div key={inv.name} className="investor-card">
-                <span className="investor-card__name">{inv.name}</span>
-                {inv.desc && <span className="investor-card__desc">{inv.desc}</span>}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Gamified Learning Loop */}
         <div className="landing-loop">
           {LOOP.map((s, i) => (
             <div key={s.step} className="landing-loop__item">
@@ -175,16 +147,15 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Eco Data Section */}
         <section className="landing-eco-section">
           <div className="landing-eco-header">
-            <span className="landing-badge">⚡ ECO DATA</span>
-            <h2>Autonomous Efficiency in Action</h2>
-            <p className="text-secondary">Your non-stop Web3 Agent's real-time impact.</p>
+            <span className="landing-badge">⚡ COODYSSEY STATS</span>
+            <h2>Gamified Learning in Action</h2>
+            <p className="text-secondary">Real-time learning impact across engineering students.</p>
           </div>
 
           <div className="landing-eco-grid">
-            {ECO_STATS.map((st) => (
+            {PLATFORM_STATS.map((st) => (
               <div key={st.label} className={`eco-card eco-card--${st.variant}`}>
                 <div className="eco-card__value">{st.value}</div>
                 <div className="eco-card__label">{st.label}</div>
@@ -193,19 +164,17 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Advantages / Comparison Section */}
         <section className="landing-advantages-section">
           <div className="center-text" style={{ marginBottom: 32 }}>
-            <span className="landing-badge">⭐ ADVANTAGES</span>
-            <h2 style={{ fontSize: 32, marginTop: 12 }}>Why Choose WORLD3 Agents?</h2>
+            <span className="landing-badge">⭐ THE COODYSSEY DIFFERENCE</span>
+            <h2 style={{ fontSize: 32, marginTop: 12 }}>Why Choose Codyssey?</h2>
           </div>
 
           <div className="advantages-grid">
-            {/* Other Agents */}
             <div className="advantage-card advantage-card--other glass">
-              <h3 className="advantage-card__title">Other Agents</h3>
+              <h3 className="advantage-card__title">Traditional Coding Sites</h3>
               <ul className="advantage-list">
-                {OTHER_AGENTS_LIMITS.map((item, idx) => (
+                {OTHER_PLATFORMS_LIMITS.map((item, idx) => (
                   <li key={idx} className="advantage-item advantage-item--fail">
                     <span className="advantage-icon advantage-icon--fail">✕</span>
                     <span>{item}</span>
@@ -214,14 +183,13 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            {/* WORLD3 Agents */}
-            <div className="advantage-card advantage-card--world3 glass">
+            <div className="advantage-card advantage-card--codyssey glass">
               <div className="advantage-card__brand">
                 <span className="landing-nav__mark">⚡</span>
-                <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '0.05em' }}>WORLD3</span>
+                <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '0.05em' }}>Codyssey</span>
               </div>
               <ul className="advantage-list">
-                {WORLD3_ADVANTAGES.map((item, idx) => (
+                {COODYSSEY_ADVANTAGES.map((item, idx) => (
                   <li key={idx} className="advantage-item advantage-item--pass">
                     <span className="advantage-icon advantage-icon--pass">✓</span>
                     <span>{item}</span>
@@ -232,7 +200,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Codeverse Showcase */}
         <section className="landing-showcase">
           <div>
             <p className="eyebrow" style={{ marginBottom: 10 }}>The Codeverse</p>
@@ -252,7 +219,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-      {/* Core Platform Features */}
         <section className="landing-features">
           {FEATURES.map((f) => (
             <Card key={f.title} className="landing-feature" hover>
@@ -264,54 +230,44 @@ export default function LandingPage() {
         </section>
       </div>
 
-      {/* Rich Landing Footer */}
       <footer className="landing-footer-container">
         <div className="container">
           <div className="landing-footer-grid">
             <div className="footer-brand-col">
               <div className="landing-nav__logo" style={{ marginBottom: 14 }}>
-                <span className="landing-nav__mark">⚡</span> Codyssey / WORLD3
+                <span className="landing-nav__mark">⚡</span> Codyssey
               </div>
               <p className="footer-brand-desc">
-                Empowering the future of Web3 learning and autonomous AI agents with persistent memory, continuous learning, and multi-agent execution.
+                The gamified programming platform designed for engineering students to master web development through interactive quests, quizzes, streaks, and skill roadmaps.
               </p>
-              <div className="footer-socials">
-                <a href="#twitter" aria-label="Twitter" className="footer-social-icon">𝕏</a>
-                <a href="#discord" aria-label="Discord" className="footer-social-icon">👾</a>
-                <a href="#github" aria-label="GitHub" className="footer-social-icon">💻</a>
-                <a href="#telegram" aria-label="Telegram" className="footer-social-icon">✈️</a>
-              </div>
             </div>
 
             <div className="footer-links-col">
               <h4 className="footer-col-title">Ecosystem</h4>
               <ul className="footer-links">
-                <li><Link to="/signup">Codeverse Galaxy</Link></li>
-                <li><Link to="/signup">AI Quests</Link></li>
-                <li><Link to="/signup">Skill Worlds</Link></li>
-                <li><Link to="/signup">Autonomous Agents</Link></li>
-                <li><Link to="/signup">Leaderboard</Link></li>
+                <li><Link to="signup">Codeverse Galaxy</Link></li>
+                <li><Link to="signup">Coding Quests</Link></li>
+                <li><Link to="signup">Skill Worlds</Link></li>
+                <li><Link to="signup">University Leaderboard</Link></li>
               </ul>
             </div>
 
             <div className="footer-links-col">
-              <h4 className="footer-col-title">Resources</h4>
+              <h4 className="footer-col-title">Learning Paths</h4>
               <ul className="footer-links">
-                <li><a href="#docs">Documentation</a></li>
-                <li><a href="#whitepaper">Whitepaper</a></li>
-                <li><a href="#news">Ecosystem News</a></li>
-                <li><a href="#status">System Status</a></li>
-                <li><a href="#brand">Brand Assets</a></li>
+                <li><Link to="signup">HTML & Semantic Web</Link></li>
+                <li><Link to="signup">CSS & Modern Design</Link></li>
+                <li><Link to="signup">JavaScript Core</Link></li>
+                <li><Link to="signup">React & Components</Link></li>
               </ul>
             </div>
 
             <div className="footer-links-col">
-              <h4 className="footer-col-title">Community</h4>
+              <h4 className="footer-col-title">Platform</h4>
               <ul className="footer-links">
-                <li><a href="#dao">DAO Governance</a></li>
-                <li><a href="#grants">Ecosystem Grants</a></li>
-                <li><a href="#ambassadors">Ambassadors</a></li>
-                <li><a href="#discord">Discord Community</a></li>
+                <li><Link to="signin">Sign In</Link></li>
+                <li><Link to="signup">Create Account</Link></li>
+                <li><Link to="setup">Onboarding Setup</Link></li>
               </ul>
             </div>
           </div>
@@ -320,5 +276,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-

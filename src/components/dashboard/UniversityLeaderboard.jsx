@@ -7,7 +7,6 @@ import './dashboard.css';
 export default function UniversityLeaderboard({ userCollege }) {
   const [selectedUniv, setSelectedUniv] = useState(null);
 
-  // Sort by total XP descending
   const sortedColleges = [...collegeDetails].sort((a, b) => b.totalXP - a.totalXP);
   const topXP = sortedColleges[0]?.totalXP || 1;
 

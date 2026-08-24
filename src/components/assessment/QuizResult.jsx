@@ -2,7 +2,6 @@ import Button from '../common/Button';
 import XPCounter from '../common/XPCounter';
 import './assessment.css';
 
-/** Final quiz summary screen with score, accuracy, combo bonus, and XP earned. */
 export default function QuizResult({ correct, total, xpAwarded, comboBonus = 0, perfect = false, onContinue, onReattempt }) {
   const accuracy = Math.round((correct / total) * 100);
   return (

@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-/**
- * useLocalStorage
- * Keeps a piece of React state in sync with a single localStorage key.
- * This is the ONLY place in the app that should read/write localStorage
- * directly for stateful data — every other hook/component goes through this.
- */
 export function useLocalStorage(key, initialValue) {
   const [storedKey, setStoredKey] = useState(key);
   const [value, setValue] = useState(() => {
@@ -18,7 +12,6 @@ export function useLocalStorage(key, initialValue) {
     }
   });
 
-  // Synchronously update value if key changes before effect fires
   if (storedKey !== key) {
     setStoredKey(key);
     let nextVal = initialValue;

@@ -1,6 +1,5 @@
 import Card from '../common/Card';
 
-/** Generic small-stat card used to summarize a single number, e.g. lessons completed. */
 export default function ProgressCard({ label, value, icon }) {
   return (
     <Card>

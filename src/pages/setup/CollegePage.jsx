@@ -1,6 +1,5 @@
 import { collegeDetails } from '../../data/colleges';
 
-/** Step 3 of onboarding — university selection with campus badges. */
 export default function CollegePage({ value, onSelect }) {
   return (
     <>
@@ -45,4 +44,4 @@ export default function CollegePage({ value, onSelect }) {
     </>
   );
 }
-
+

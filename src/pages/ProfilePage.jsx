@@ -31,7 +31,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Campus Badge */}
           <div style={{ margin: '14px 0', padding: 12, borderRadius: 10, background: '#0e1426', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 24 }}>{collegeObj?.badge || '🎓'}</span>
             <div>
@@ -76,4 +75,4 @@ export default function ProfilePage() {
     </PageContainer>
   );
 }
-
+

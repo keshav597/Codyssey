@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigation } from '../../hooks/useNavigation';
 import { ArrowDown, Lock, Play } from 'lucide-react';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import ProgressBar from '../common/ProgressBar';
 
 export default function SimpleRoadmapView({ skills, completedLessonIds }) {
-  const navigate = useNavigate();
+  const { navigate } = useNavigation();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -73,7 +73,6 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
                 </div>
               </div>
 
-              {/* Action */}
               <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="text-muted" style={{ fontSize: 12 }}>
                   {isLocked ? 'Complete previous level to unlock' : `${skill.progress}% of topic material completed`}
@@ -81,7 +80,7 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
                 <Button
                   variant={isLocked ? 'ghost' : isCurrent ? 'primary' : 'secondary'}
                   disabled={isLocked}
-                  onClick={() => navigate('/learn', { state: { skillId: skill.id } })}
+                  onClick={() => navigate('learn', { skillId: skill.id })}
                   style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13 }}
                 >
                   <Play size={13} /> {isCompleted ? 'Review Level' : 'Start Level'}
@@ -89,7 +88,6 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
               </div>
             </Card>
 
-            {/* Downward connecting line between steps */}
             {index < skills.length - 1 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0' }}>
                 <div style={{ width: 2, height: 24, background: isCompleted ? '#2dd4a7' : 'rgba(255, 255, 255, 0.08)' }} />

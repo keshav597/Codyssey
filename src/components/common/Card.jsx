@@ -1,6 +1,5 @@
 import './Card.css';
 
-/** Base surface container used across dashboard, skills, and quest cards. */
 export default function Card({ children, className = '', hover = false, onClick = null, style = {} }) {
   return (
     <div

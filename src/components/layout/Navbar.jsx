@@ -3,7 +3,6 @@ import { useProgress } from '../../hooks/useProgress';
 import XPCounter from '../common/XPCounter';
 import './Navbar.css';
 
-/** Top bar shown inside the authenticated app shell — XP/streak/level. */
 export default function Navbar({ title }) {
   const { student, levelInfo } = useProgress();
 
@@ -25,5 +24,4 @@ export default function Navbar({ title }) {
     </header>
   );
 }
-
-
+

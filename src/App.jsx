@@ -1,5 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './components/layout/ProtectedRoute';
+import { useNavigation } from './hooks/useNavigation';
+import { useAuth } from './hooks/useAuth';
 
 import LandingPage from './pages/LandingPage';
 import SignUpPage from './pages/SignUpPage';
@@ -15,28 +15,48 @@ import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-/**
- * App.jsx — routing only. Providers live in main.jsx.
- * Protected routes redirect unauthenticated users to /signin.
- */
+
 export default function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/signin" element={<SignInPage />} />
-      <Route path="/setup" element={<SetupPage />} />
+  const { currentPage, isPublicPage } = useNavigation();
+  const { currentUser } = useAuth();
 
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/codeverse" element={<ProtectedRoute><CodeversePage /></ProtectedRoute>} />
-      <Route path="/learn" element={<ProtectedRoute><LearnPage /></ProtectedRoute>} />
-      <Route path="/quests" element={<ProtectedRoute><QuestPage /></ProtectedRoute>} />
-      <Route path="/quiz" element={<ProtectedRoute><AssessmentPage /></ProtectedRoute>} />
-      <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+  
+  if (!currentUser && !isPublicPage) {
+    return <SignInPage />;
+  }
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  );
+  
+  if (currentUser && !currentUser.onboardingComplete && currentPage !== 'setup' && !isPublicPage) {
+    return <SetupPage />;
+  }
+
+  switch (currentPage) {
+    case 'landing':
+    case '':
+      return <LandingPage />;
+    case 'signin':
+      return <SignInPage />;
+    case 'signup':
+      return <SignUpPage />;
+    case 'setup':
+      return <SetupPage />;
+    case 'dashboard':
+      return <Dashboard />;
+    case 'codeverse':
+      return <CodeversePage />;
+    case 'learn':
+      return <LearnPage />;
+    case 'quests':
+      return <QuestPage />;
+    case 'quiz':
+      return <AssessmentPage />;
+    case 'rewards':
+      return <RewardsPage />;
+    case 'profile':
+      return <ProfilePage />;
+    case 'settings':
+      return <SettingsPage />;
+    default:
+      return <NotFoundPage />;
+  }
 }

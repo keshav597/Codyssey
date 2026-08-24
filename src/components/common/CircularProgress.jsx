@@ -1,7 +1,4 @@
-/**
- * SVG ring progress indicator — used for the dashboard level ring and
- * the Codeverse overall-exploration readout. Pure SVG, no canvas.
- */
+
 export default function CircularProgress({ percent = 0, size = 100, stroke = 9, color = '#6366f1', children }) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;

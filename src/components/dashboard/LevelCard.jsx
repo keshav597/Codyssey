@@ -4,7 +4,6 @@ import CircularProgress from '../common/CircularProgress';
 import XPCounter from '../common/XPCounter';
 import './dashboard.css';
 
-/** Shows current level as a glowing ring plus a bar toward the next level. */
 export default function LevelCard({ levelInfo }) {
   const { current, next, xpIntoLevel, xpForNextLevel, percent } = levelInfo;
   return (

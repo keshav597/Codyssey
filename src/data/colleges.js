@@ -87,4 +87,4 @@ export const collegeDetails = [
     topSkill: 'Computer Science',
   },
 ];
-
+

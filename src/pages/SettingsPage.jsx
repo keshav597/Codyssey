@@ -28,7 +28,7 @@ export default function SettingsPage() {
 
   return (
     <PageContainer title="Settings">
-      {/* Profile Section */}
+      
       <Card className="settings-section" style={{ marginBottom: 20 }}>
         <h3 style={{ marginBottom: 14 }}>Profile & Student Info</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -39,7 +39,6 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* University Section */}
       <Card className="settings-section" style={{ marginBottom: 20 }}>
         <h3 style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
           <Building2 size={18} color="#6366f1" /> University & Campus
@@ -76,7 +75,6 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Daily Goal Section */}
       <Card className="settings-section" style={{ marginBottom: 20 }}>
         <h3 style={{ marginBottom: 14 }}>Daily Goal</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -92,7 +90,6 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Danger Zone */}
       <Card className="settings-section">
         <h3 style={{ marginBottom: 10, color: '#fb4570' }}>Danger Zone</h3>
         <p className="text-secondary" style={{ fontSize: 13, marginBottom: 14 }}>
@@ -112,4 +109,4 @@ export default function SettingsPage() {
     </PageContainer>
   );
 }
-
+

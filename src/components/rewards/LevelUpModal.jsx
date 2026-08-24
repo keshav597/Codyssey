@@ -3,7 +3,6 @@ import Button from '../common/Button';
 import ConfettiBurst from '../common/ConfettiBurst';
 import './rewards.css';
 
-/** Full-screen-feeling celebration shown whenever the student's XP crosses a level threshold. */
 export default function LevelUpModal({ level, onClose }) {
   if (!level) return null;
   return (

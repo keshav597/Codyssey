@@ -2,7 +2,6 @@ import { useState } from 'react';
 import QuestionCard from '../assessment/QuestionCard';
 import Button from '../common/Button';
 
-/** Single-question "quick check" step inside the interactive lesson flow. */
 export default function QuickCheckStep({ question, onComplete }) {
   const [selected, setSelected] = useState(null);
   const [revealed, setRevealed] = useState(false);

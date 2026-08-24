@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from '../components/common/Link';
+import { useNavigation } from '../hooks/useNavigation';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
@@ -8,7 +9,7 @@ import './pages.css';
 
 export default function SignInPage() {
   const { signIn, currentUser } = useAuth();
-  const navigate = useNavigate();
+  const { navigate } = useNavigation();
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
@@ -26,7 +27,7 @@ export default function SignInPage() {
       setFormError(result.error);
       return;
     }
-    navigate(result.user.onboardingComplete ? '/dashboard' : '/setup');
+    navigate(result.user.onboardingComplete ? 'dashboard' : 'setup');
   };
 
   return (

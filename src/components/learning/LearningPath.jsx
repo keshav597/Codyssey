@@ -1,6 +1,5 @@
 import './learning.css';
 
-/** Horizontal strip of lesson pips for a skill, showing completion at a glance. */
 export default function LearningPath({ lessons, completedLessonIds, activeLessonId, onSelect }) {
   return (
     <div className="learning-path-track">

@@ -1,8 +1,4 @@
-/**
- * Quests are the primary gameplay loop: Learning, Quiz, Challenge, Daily, Streak.
- * status is derived at runtime (locked/available/active/completed) based on
- * the student's completedLessonIds / completedQuestIds — never hardcoded.
- */
+
 export const quests = [
   { id: 'q-html-basics', title: 'Foundations of HTML', type: 'learning', skillId: 'html', xp: 20, difficulty: 1, requiresLessonIds: ['html-1'], description: 'Complete the "Structure & Semantic Tags" lesson.' },
   { id: 'q-html-quiz', title: 'HTML Knowledge Check', type: 'quiz', skillId: 'html', xp: 30, difficulty: 1, description: 'Answer 5 questions on HTML fundamentals.' },

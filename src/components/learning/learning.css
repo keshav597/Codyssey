@@ -15,7 +15,6 @@
 .lesson-content__topics { display: flex; gap: 8px; flex-wrap: wrap; }
 .learning-path-track { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
 
-/* Interactive lesson flow (Duolingo-style) */
 .lesson-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
 .lesson-progress__exit {
   background: none; border: none; color: #656d92; font-size: 16px;
@@ -58,4 +57,4 @@
 .fill-blank__chip--incorrect { border-color: #fb4570; background: rgba(244, 63, 94, 0.14); color: #fb4570; }
 
 .lesson-complete { text-align: center; padding: 24px 0; display: flex; flex-direction: column; align-items: center; }
-.lesson-complete__burst { font-size: 52px; animation: pop-in 0.4s ease; margin-bottom: 6px; }
+.lesson-complete__burst { font-size: 52px; margin-bottom: 6px; }

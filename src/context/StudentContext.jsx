@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../hooks/useAuth';
 import { skills, skillOrder } from '../data/skills';
@@ -16,20 +16,14 @@ const DEFAULT_STATE = {
   completedQuestIds: [],
   completedQuizIds: [],
   unlockedBadgeIds: [],
-  quizHistory: [], // { id, skillId, correct, total, xpAwarded, date }
+  quizHistory: [],
   streak: { count: 0, lastActiveDate: null },
   settings: {
     displayName: 'Coder',
     learningPreference: 'Web Development',
     dailyGoalMinutes: 20,
-    theme: 'dark',
   },
   onboarding: null,
-  // Transient markers, consumed and cleared by the effects below —
-  // kept in state (not local component state) because they're set
-  // from inside a setState updater, which must stay a pure function.
-  pendingBadgeUnlock: null,
-  pendingLevelUp: null,
 };
 
 function todayString() {
@@ -45,365 +39,243 @@ function daysBetween(a, b) {
 export function StudentProvider({ children }) {
   const { currentUser } = useAuth();
 
-  const storageKey = useMemo(() => {
-    if (!currentUser?.id) return 'codyssey_student_guest';
-    const userKey = `codyssey_student_${currentUser.id}`;
-    try {
-      if (window.localStorage.getItem(userKey) === null) {
-        const legacy = window.localStorage.getItem('codyssey_student');
-        if (legacy !== null) {
-          window.localStorage.setItem(userKey, legacy);
-        }
-      }
-    } catch (e) {
-      console.warn('Storage check failed', e);
-    }
-    return userKey;
-  }, [currentUser?.id]);
+  const storageKey = currentUser?.id ? `codyssey_student_${currentUser.id}` : 'codyssey_student_guest';
 
   const [student, setStudent] = useLocalStorage(storageKey, DEFAULT_STATE);
   const [lastUnlockedBadge, setLastUnlockedBadge] = useState(null);
   const [lastLevelUp, setLastLevelUp] = useState(null);
-  const [lastComboBonus, setLastComboBonus] = useState(null);
 
-  /** Pure helper — no side effects. Returns the new level object only if XP crossed a level threshold. */
-  const getLevelUpIfAny = useCallback((prevXP, nextXP) => {
-    const before = calculateLevel(prevXP).level;
-    const after = calculateLevel(nextXP).level;
-    return after > before ? calculateLevel(nextXP) : null;
-  }, []);
-
-  // ---- Derived: unlocked skills (first skill always unlocked; each next
-  // skill unlocks once the previous is 100% complete) ----
-  const unlockedSkillIds = useMemo(() => {
-    const unlocked = [];
-    for (let i = 0; i < skillOrder.length; i++) {
-      const skillId = skillOrder[i];
-      if (i === 0) {
-        unlocked.push(skillId);
-        continue;
-      }
-      const prevSkill = skills.find((s) => s.id === skillOrder[i - 1]);
-      const prevProgress = calculateSkillProgress(prevSkill, student.completedLessonIds);
-      if (prevProgress === 100) unlocked.push(skillId);
-    }
-    return unlocked;
-  }, [student.completedLessonIds]);
-
-  const levelInfo = useMemo(() => calculateLevelProgress(student.xp), [student.xp]);
-
-  const skillsWithProgress = useMemo(
-    () =>
-      skills.map((skill) => ({
-        ...skill,
-        progress: calculateSkillProgress(skill, student.completedLessonIds),
-        status: getSkillStatus(skill, student.completedLessonIds, unlockedSkillIds),
-      })),
-    [student.completedLessonIds, unlockedSkillIds]
-  );
-
-  const questsWithStatus = useMemo(
-    () =>
-      questData.map((quest) => {
-        const completed = student.completedQuestIds.includes(quest.id);
-        let status = 'available';
-        if (completed) status = 'completed';
-        else if (quest.type === 'daily') status = 'available';
-        else if (quest.skillId && !unlockedSkillIds.includes(quest.skillId)) status = 'locked';
-        else if (quest.requiresLessonIds) {
-          const done = quest.requiresLessonIds.every((id) => student.completedLessonIds.includes(id));
-          status = done ? 'completed' : 'available';
-        }
-        return { ...quest, status };
-      }),
-    [student.completedQuestIds, student.completedLessonIds, unlockedSkillIds]
-  );
-
-  // ---- Badge evaluation ----
-  const evaluateBadges = useCallback(
-    (draftStudent) => {
-      const newlyUnlocked = [];
-      for (const badge of badgeData) {
-        if (draftStudent.unlockedBadgeIds.includes(badge.id)) continue;
-        let met = false;
-        const c = badge.condition;
-        if (c.type === 'skillComplete') {
-          const skill = skills.find((s) => s.id === c.skillId);
-          met = calculateSkillProgress(skill, draftStudent.completedLessonIds) === 100;
-        } else if (c.type === 'quizzesCompleted') {
-          met = draftStudent.quizHistory.length >= c.count;
-        } else if (c.type === 'streak') {
-          met = draftStudent.streak.count >= c.days;
-        } else if (c.type === 'questsCompleted') {
-          met = draftStudent.completedQuestIds.length >= c.count;
-        } else if (c.type === 'questsCompletedByType') {
-          const count = draftStudent.completedQuestIds.filter((id) => {
-            const q = questData.find((qq) => qq.id === id);
-            return q && q.type === c.questType;
-          }).length;
-          met = count >= c.count;
-        } else if (c.type === 'level') {
-          met = calculateLevel(draftStudent.xp).level >= c.level;
-        }
-        if (met) newlyUnlocked.push(badge);
-      }
-      return newlyUnlocked;
-    },
-    []
-  );
-
-  /** Pure — returns draft with any newly-unlocked badges applied and recorded as a pending marker. */
-  const applyBadgeUnlocks = useCallback(
-    (draftStudent) => {
-      const newBadges = evaluateBadges(draftStudent);
-      if (newBadges.length === 0) return draftStudent;
-      return {
-        ...draftStudent,
-        unlockedBadgeIds: [...draftStudent.unlockedBadgeIds, ...newBadges.map((b) => b.id)],
-        xp: addXP(draftStudent.xp, newBadges.reduce((sum, b) => sum + b.xp, 0)),
-        pendingBadgeUnlock: newBadges[newBadges.length - 1],
-      };
-    },
-    [evaluateBadges]
-  );
-
-  // ---- Streak update: called whenever a meaningful learning action happens ----
-  const bumpStreak = useCallback((draftStudent) => {
+  function bumpStreak(draftStudent) {
     const today = todayString();
-    const { lastActiveDate, count } = draftStudent.streak;
-    if (lastActiveDate === today) return draftStudent; // already counted today
+    const { lastActiveDate, count = 0 } = draftStudent.streak || {};
+    if (lastActiveDate === today) return draftStudent;
+
     let newCount = 1;
     if (lastActiveDate) {
       const diff = daysBetween(lastActiveDate, today);
       newCount = diff === 1 ? count + 1 : 1;
     }
     return { ...draftStudent, streak: { count: newCount, lastActiveDate: today } };
-  }, []);
+  }
 
-  // ---- Public actions ----
-  const completeLesson = useCallback(
-    (lessonId, xpAmount = XP_REWARDS.LESSON_COMPLETE) => {
-      setStudent((prev) => {
-        const isNew = !prev.completedLessonIds.includes(lessonId);
-        const updatedLessonIds = isNew ? [...prev.completedLessonIds, lessonId] : prev.completedLessonIds;
+  function checkNewBadges(draftStudent) {
+    const newlyUnlocked = [];
+    for (const badge of badgeData) {
+      if (draftStudent.unlockedBadgeIds.includes(badge.id)) continue;
+      let met = false;
+      const c = badge.condition;
+      if (c.type === 'skillComplete') {
+        const skill = skills.find((s) => s.id === c.skillId);
+        met = calculateSkillProgress(skill, draftStudent.completedLessonIds) === 100;
+      } else if (c.type === 'quizzesCompleted') {
+        met = draftStudent.quizHistory.length >= c.count;
+      } else if (c.type === 'streak') {
+        met = draftStudent.streak.count >= c.days;
+      } else if (c.type === 'questsCompleted') {
+        met = draftStudent.completedQuestIds.length >= c.count;
+      } else if (c.type === 'level') {
+        met = calculateLevel(draftStudent.xp).level >= c.level;
+      }
+      if (met) newlyUnlocked.push(badge);
+    }
+    return newlyUnlocked;
+  }
 
-        // Check if completing this lesson completes any requiresLessonIds quests
-        const newlyCompletedQuestIds = [];
-        let additionalQuestXP = 0;
+  function completeLesson(lessonId, xpAmount = XP_REWARDS.LESSON_COMPLETE) {
+    setStudent((prev) => {
+      const isNew = !prev.completedLessonIds.includes(lessonId);
+      const updatedLessons = isNew ? [...prev.completedLessonIds, lessonId] : prev.completedLessonIds;
 
-        questData.forEach((q) => {
-          if (q.requiresLessonIds && q.requiresLessonIds.length > 0) {
-            const allReqsDone = q.requiresLessonIds.every((id) => updatedLessonIds.includes(id));
-            const wasAlreadyDone = prev.completedQuestIds.includes(q.id);
-            if (allReqsDone && !wasAlreadyDone && !newlyCompletedQuestIds.includes(q.id)) {
-              newlyCompletedQuestIds.push(q.id);
-              additionalQuestXP += (q.xp || XP_REWARDS.QUEST_COMPLETE);
-            }
+      const newQuests = [];
+      questData.forEach((q) => {
+        if (q.requiresLessonIds && q.requiresLessonIds.length > 0) {
+          const done = q.requiresLessonIds.every((id) => updatedLessons.includes(id));
+          if (done && !prev.completedQuestIds.includes(q.id)) {
+            newQuests.push(q.id);
           }
-        });
-
-        const updatedQuestIds = newlyCompletedQuestIds.length > 0
-          ? [...prev.completedQuestIds, ...newlyCompletedQuestIds]
-          : prev.completedQuestIds;
-
-        let next = {
-          ...prev,
-          completedLessonIds: updatedLessonIds,
-          completedQuestIds: updatedQuestIds,
-          xp: addXP(prev.xp, xpAmount + additionalQuestXP),
-        };
-        next = bumpStreak(next);
-        next = applyBadgeUnlocks(next);
-        const leveledUp = getLevelUpIfAny(prev.xp, next.xp);
-        if (leveledUp) next.pendingLevelUp = leveledUp;
-        return next;
-      });
-    },
-    [setStudent, bumpStreak, applyBadgeUnlocks, getLevelUpIfAny]
-  );
-
-  const completeQuest = useCallback(
-    (questId) => {
-      setStudent((prev) => {
-        const quest = questData.find((q) => q.id === questId);
-        const xpAmount = quest ? quest.xp : XP_REWARDS.QUEST_COMPLETE;
-        const isNew = !prev.completedQuestIds.includes(questId);
-        let next = {
-          ...prev,
-          completedQuestIds: isNew ? [...prev.completedQuestIds, questId] : prev.completedQuestIds,
-          xp: addXP(prev.xp, xpAmount),
-        };
-        next = bumpStreak(next);
-        next = applyBadgeUnlocks(next);
-        const leveledUp = getLevelUpIfAny(prev.xp, next.xp);
-        if (leveledUp) next.pendingLevelUp = leveledUp;
-        return next;
-      });
-    },
-    [setStudent, bumpStreak, applyBadgeUnlocks, getLevelUpIfAny]
-  );
-
-  const submitQuizResult = useCallback(
-    ({ skillId, correct, total, questId, comboBonus = 0 }) => {
-      const quizIdentifier = questId || `quiz-${skillId}`;
-      let finalAwardedXP = 0;
-
-      setStudent((prev) => {
-        const completedQuests = prev.completedQuestIds || [];
-        const completedQuizzes = prev.completedQuizIds || [];
-
-        // Check if this quiz has already awarded XP previously
-        const isQuestDone = questId ? completedQuests.includes(questId) : false;
-        const isQuizDone = completedQuizzes.includes(quizIdentifier);
-        const hasHistoryXP = (prev.quizHistory || []).some(
-          (h) =>
-            (h.quizId === quizIdentifier ||
-              (questId && h.questId === questId) ||
-              (!h.quizId && !h.questId && !questId && h.skillId === skillId)) &&
-            h.xpAwarded > 0
-        );
-
-        const alreadyAwarded = isQuestDone || isQuizDone || hasHistoryXP;
-
-        let xpAmount = 0;
-        if (!alreadyAwarded) {
-          const baseXP = calculateQuizXP(correct, total);
-          xpAmount = baseXP + comboBonus;
         }
-
-        finalAwardedXP = xpAmount;
-
-        const updatedCompletedQuests =
-          questId && !completedQuests.includes(questId)
-            ? [...completedQuests, questId]
-            : completedQuests;
-
-        const updatedCompletedQuizzes = !completedQuizzes.includes(quizIdentifier)
-          ? [...completedQuizzes, quizIdentifier]
-          : completedQuizzes;
-
-        let next = {
-          ...prev,
-          completedQuestIds: updatedCompletedQuests,
-          completedQuizIds: updatedCompletedQuizzes,
-          xp: addXP(prev.xp, xpAmount),
-          quizHistory: [
-            ...prev.quizHistory,
-            {
-              id: `quiz-${Date.now()}`,
-              quizId: quizIdentifier,
-              questId: questId || null,
-              skillId,
-              correct,
-              total,
-              xpAwarded: xpAmount,
-              date: todayString(),
-            },
-          ],
-        };
-
-        next = bumpStreak(next);
-        next = applyBadgeUnlocks(next);
-        const leveledUp = getLevelUpIfAny(prev.xp, next.xp);
-        if (leveledUp) next.pendingLevelUp = leveledUp;
-        return next;
       });
 
-      if (comboBonus > 0 && finalAwardedXP > 0) setLastComboBonus(comboBonus);
-      return finalAwardedXP;
-    },
-    [setStudent, bumpStreak, applyBadgeUnlocks, getLevelUpIfAny]
-  );
+      const updatedQuests = newQuests.length > 0 ? [...prev.completedQuestIds, ...newQuests] : prev.completedQuestIds;
+      const newXP = isNew ? addXP(prev.xp, xpAmount) : prev.xp;
 
-  const updateSettings = useCallback(
-    (partialSettings) => {
-      setStudent((prev) => ({ ...prev, settings: { ...prev.settings, ...partialSettings } }));
-    },
-    [setStudent]
-  );
+      const oldLevel = calculateLevel(prev.xp).level;
+      const newLevelObj = calculateLevel(newXP);
+      if (newLevelObj.level > oldLevel) {
+        setLastLevelUp(newLevelObj);
+      }
 
-  const setOnboarding = useCallback(
-    (onboardingData) => {
-      setStudent((prev) => ({ ...prev, onboarding: onboardingData }));
-    },
-    [setStudent]
-  );
-
-  const resetProgress = useCallback(() => {
-    setStudent(DEFAULT_STATE);
-  }, [setStudent]);
-
-  const clearBadgeToast = useCallback(() => setLastUnlockedBadge(null), []);
-  const clearLevelUpToast = useCallback(() => setLastLevelUp(null), []);
-  const clearComboBonus = useCallback(() => setLastComboBonus(null), []);
-
-  // ---- Consume transient markers as real effects (not inside the setState
-  // updater above, which must stay pure — see getLevelUpIfAny/applyBadgeUnlocks). ----
-  useEffect(() => {
-    if (student.pendingBadgeUnlock) {
-      setLastUnlockedBadge(student.pendingBadgeUnlock);
-      setStudent((prev) => ({ ...prev, pendingBadgeUnlock: null }));
-    }
-  }, [student.pendingBadgeUnlock, setStudent]);
-
-  useEffect(() => {
-    if (student.pendingLevelUp) {
-      setLastLevelUp(student.pendingLevelUp);
-      setStudent((prev) => ({ ...prev, pendingLevelUp: null }));
-    }
-  }, [student.pendingLevelUp, setStudent]);
-
-  const effectiveStudent = useMemo(() => {
-    if (!student || !student.streak) {
-      return {
-        ...(student || DEFAULT_STATE),
-        streak: { count: 0, lastActiveDate: null },
+      let updated = {
+        ...prev,
+        completedLessonIds: updatedLessons,
+        completedQuestIds: updatedQuests,
+        xp: newXP,
       };
-    }
-    return student;
-  }, [student]);
 
-  const value = useMemo(
-    () => ({
-      student: effectiveStudent,
-      levelInfo,
-      skillsWithProgress,
-      questsWithStatus,
-      unlockedSkillIds,
-      badges: badgeData.map((b) => ({ ...b, unlocked: effectiveStudent.unlockedBadgeIds.includes(b.id) })),
-      lastUnlockedBadge,
-      lastLevelUp,
-      lastComboBonus,
-      completeLesson,
-      completeQuest,
-      submitQuizResult,
-      updateSettings,
-      setOnboarding,
-      resetProgress,
-      clearBadgeToast,
-      clearLevelUpToast,
-      clearComboBonus,
-    }),
-    [
-      effectiveStudent,
-      levelInfo,
-      skillsWithProgress,
-      questsWithStatus,
-      unlockedSkillIds,
-      lastUnlockedBadge,
-      lastLevelUp,
-      lastComboBonus,
-      completeLesson,
-      completeQuest,
-      submitQuizResult,
-      updateSettings,
-      setOnboarding,
-      resetProgress,
-      clearBadgeToast,
-      clearLevelUpToast,
-      clearComboBonus,
-    ]
-  );
+      updated = bumpStreak(updated);
+
+      const newBadges = checkNewBadges(updated);
+      if (newBadges.length > 0) {
+        setLastUnlockedBadge(newBadges[newBadges.length - 1]);
+        updated.unlockedBadgeIds = [...updated.unlockedBadgeIds, ...newBadges.map((b) => b.id)];
+      }
+
+      return updated;
+    });
+  }
+
+  function completeQuest(questId) {
+    setStudent((prev) => {
+      if (prev.completedQuestIds.includes(questId)) return prev;
+      const quest = questData.find((q) => q.id === questId);
+      const reward = quest ? quest.xp : XP_REWARDS.QUEST_COMPLETE;
+      const newXP = addXP(prev.xp, reward);
+
+      const oldLevel = calculateLevel(prev.xp).level;
+      const newLevelObj = calculateLevel(newXP);
+      if (newLevelObj.level > oldLevel) setLastLevelUp(newLevelObj);
+
+      let updated = {
+        ...prev,
+        completedQuestIds: [...prev.completedQuestIds, questId],
+        xp: newXP,
+      };
+
+      updated = bumpStreak(updated);
+
+      const newBadges = checkNewBadges(updated);
+      if (newBadges.length > 0) {
+        setLastUnlockedBadge(newBadges[newBadges.length - 1]);
+        updated.unlockedBadgeIds = [...updated.unlockedBadgeIds, ...newBadges.map((b) => b.id)];
+      }
+
+      return updated;
+    });
+  }
+
+  function submitQuizResult({ skillId, correct, total, questId }) {
+    const quizId = questId || `quiz-${skillId}`;
+    let awardedXP = 0;
+
+    setStudent((prev) => {
+      const alreadyDone =
+        (questId && prev.completedQuestIds.includes(questId)) ||
+        prev.completedQuizIds.includes(quizId) ||
+        prev.quizHistory.some((h) => (h.quizId === quizId || h.questId === questId) && h.xpAwarded > 0);
+
+      const earnedXP = alreadyDone ? 0 : calculateQuizXP(correct, total);
+      awardedXP = earnedXP;
+
+      const newXP = addXP(prev.xp, earnedXP);
+      const oldLevel = calculateLevel(prev.xp).level;
+      const newLevelObj = calculateLevel(newXP);
+      if (newLevelObj.level > oldLevel && earnedXP > 0) setLastLevelUp(newLevelObj);
+
+      const updatedQuests = questId && !prev.completedQuestIds.includes(questId)
+        ? [...prev.completedQuestIds, questId]
+        : prev.completedQuestIds;
+
+      const updatedQuizzes = !prev.completedQuizIds.includes(quizId)
+        ? [...prev.completedQuizIds, quizId]
+        : prev.completedQuizIds;
+
+      let updated = {
+        ...prev,
+        completedQuestIds: updatedQuests,
+        completedQuizIds: updatedQuizzes,
+        xp: newXP,
+        quizHistory: [
+          ...prev.quizHistory,
+          {
+            id: `quiz-${Date.now()}`,
+            quizId,
+            questId: questId || null,
+            skillId,
+            correct,
+            total,
+            xpAwarded: earnedXP,
+            date: todayString(),
+          },
+        ],
+      };
+
+      updated = bumpStreak(updated);
+
+      const newBadges = checkNewBadges(updated);
+      if (newBadges.length > 0) {
+        setLastUnlockedBadge(newBadges[newBadges.length - 1]);
+        updated.unlockedBadgeIds = [...updated.unlockedBadgeIds, ...newBadges.map((b) => b.id)];
+      }
+
+      return updated;
+    });
+
+    return awardedXP;
+  }
+
+  function updateSettings(partialSettings) {
+    setStudent((prev) => ({ ...prev, settings: { ...prev.settings, ...partialSettings } }));
+  }
+
+  function setOnboarding(onboardingData) {
+    setStudent((prev) => ({ ...prev, onboarding: onboardingData }));
+  }
+
+  function resetProgress() {
+    setStudent(DEFAULT_STATE);
+  }
+
+  const unlockedSkillIds = [];
+  for (let i = 0; i < skillOrder.length; i++) {
+    const skillId = skillOrder[i];
+    if (i === 0) {
+      unlockedSkillIds.push(skillId);
+      continue;
+    }
+    const prevSkill = skills.find((s) => s.id === skillOrder[i - 1]);
+    const prevProgress = calculateSkillProgress(prevSkill, student.completedLessonIds);
+    if (prevProgress === 100) unlockedSkillIds.push(skillId);
+  }
+
+  const levelInfo = calculateLevelProgress(student.xp);
+
+  const skillsWithProgress = skills.map((skill) => ({
+    ...skill,
+    progress: calculateSkillProgress(skill, student.completedLessonIds),
+    status: getSkillStatus(skill, student.completedLessonIds, unlockedSkillIds),
+  }));
+
+  const questsWithStatus = questData.map((quest) => {
+    const completed = student.completedQuestIds.includes(quest.id);
+    let status = 'available';
+    if (completed) status = 'completed';
+    else if (quest.type === 'daily') status = 'available';
+    else if (quest.skillId && !unlockedSkillIds.includes(quest.skillId)) status = 'locked';
+    else if (quest.requiresLessonIds) {
+      const done = quest.requiresLessonIds.every((id) => student.completedLessonIds.includes(id));
+      status = done ? 'completed' : 'available';
+    }
+    return { ...quest, status };
+  });
+
+  const value = {
+    student,
+    levelInfo,
+    skillsWithProgress,
+    questsWithStatus,
+    unlockedSkillIds,
+    badges: badgeData.map((b) => ({ ...b, unlocked: student.unlockedBadgeIds.includes(b.id) })),
+    lastUnlockedBadge,
+    lastLevelUp,
+    completeLesson,
+    completeQuest,
+    submitQuizResult,
+    updateSettings,
+    setOnboarding,
+    resetProgress,
+    clearBadgeToast: () => setLastUnlockedBadge(null),
+    clearLevelUpToast: () => setLastLevelUp(null),
+  };
 
   return <StudentContext.Provider value={value}>{children}</StudentContext.Provider>;
 }

@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
 
-/** Generic centered modal with backdrop, portal-mounted on body so fixed positioning always works. */
 export default function Modal({ open, onClose, children, closeOnBackdrop = true }) {
   useEffect(() => {
     if (!open) return;
@@ -33,4 +32,4 @@ export default function Modal({ open, onClose, children, closeOnBackdrop = true 
     document.body
   );
 }
-
+
