@@ -10,7 +10,6 @@ export default function LevelUpModal({ level, onClose }) {
     <Modal open={!!level} onClose={onClose}>
       <div className="level-up" style={{ position: 'relative', overflow: 'hidden' }}>
         <ConfettiBurst pieceCount={36} />
-        <div className="ray-burst" />
         <div className="level-up__content">
           <span className="achievement-modal__label">Level Up</span>
           <div className="level-up__ring">

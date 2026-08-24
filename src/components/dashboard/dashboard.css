@@ -176,12 +176,11 @@
 }
 
 .streak-card--lit {
-  animation: pulse-glow 2.6s ease-in-out infinite;
   border-color: rgba(255, 122, 69, 0.35);
 }
 
 .streak-card__flame {
-  animation: float-star 2.2s ease-in-out infinite;
+  /* Static fire emoji without moving animation */
 }
 
 /* University Leaderboard */

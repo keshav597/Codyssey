@@ -15,7 +15,7 @@ const DEFAULT_STATE = {
   completedQuestIds: [],
   unlockedBadgeIds: [],
   quizHistory: [], // { id, skillId, correct, total, xpAwarded, date }
-  streak: { count: 0, lastActiveDate: null },
+  streak: { count: 1, lastActiveDate: null },
   settings: {
     displayName: 'Coder',
     learningPreference: 'Web Development',
@@ -88,6 +88,7 @@ export function StudentProvider({ children }) {
         const completed = student.completedQuestIds.includes(quest.id);
         let status = 'available';
         if (completed) status = 'completed';
+        else if (quest.type === 'daily') status = 'available';
         else if (quest.skillId && !unlockedSkillIds.includes(quest.skillId)) status = 'locked';
         else if (quest.requiresLessonIds) {
           const done = quest.requiresLessonIds.every((id) => student.completedLessonIds.includes(id));
@@ -271,14 +272,24 @@ export function StudentProvider({ children }) {
     }
   }, [student.pendingLevelUp, setStudent]);
 
+  const effectiveStudent = useMemo(() => {
+    if (!student || !student.streak || student.streak.count < 1) {
+      return {
+        ...student,
+        streak: { ...(student?.streak || {}), count: 1 },
+      };
+    }
+    return student;
+  }, [student]);
+
   const value = useMemo(
     () => ({
-      student,
+      student: effectiveStudent,
       levelInfo,
       skillsWithProgress,
       questsWithStatus,
       unlockedSkillIds,
-      badges: badgeData.map((b) => ({ ...b, unlocked: student.unlockedBadgeIds.includes(b.id) })),
+      badges: badgeData.map((b) => ({ ...b, unlocked: effectiveStudent.unlockedBadgeIds.includes(b.id) })),
       lastUnlockedBadge,
       lastLevelUp,
       lastComboBonus,
@@ -293,7 +304,7 @@ export function StudentProvider({ children }) {
       clearComboBonus,
     }),
     [
-      student,
+      effectiveStudent,
       levelInfo,
       skillsWithProgress,
       questsWithStatus,

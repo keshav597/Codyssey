@@ -19,9 +19,10 @@ export default function AssessmentPage() {
   const skillId = location.state?.skillId || 'html';
   const questId = location.state?.questId || null;
   const questTitle = location.state?.questTitle || 'Practice Quiz';
+  const questionCount = location.state?.questionCount || (questId?.includes('daily') ? 3 : 5);
 
   const [attemptKey, setAttemptKey] = useState(0);
-  const questions = useMemo(() => getQuestionsForSkill(skillId, 5), [skillId, attemptKey]);
+  const questions = useMemo(() => getQuestionsForSkill(skillId, questionCount), [skillId, questionCount, attemptKey]);
 
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);

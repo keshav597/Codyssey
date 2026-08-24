@@ -40,7 +40,14 @@ export default function QuestPage() {
 
   const confirmQuest = (quest) => {
     setPendingQuest(null);
-    navigate('/quiz', { state: { skillId: quest.skillId, questId: quest.id, questTitle: quest.title } });
+    navigate('/quiz', { 
+      state: { 
+        skillId: quest.skillId, 
+        questId: quest.id, 
+        questTitle: quest.title,
+        questionCount: quest.questionCount || (quest.type === 'daily' ? 3 : 5)
+      } 
+    });
   };
 
   return (

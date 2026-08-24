@@ -1,17 +1,26 @@
-import { createContext, useCallback, useMemo } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
  * AuthContext — demo, client-side-only authentication.
- * NOT secure production auth: passwords are stored in localStorage in
- * plain form purely so the Evaluation-I demo can sign up/sign in without
- * a backend. This is called out explicitly in the README.
+ * Accounts and sessions are maintained in React memory (useState)
+ * without persisting to browser localStorage, ensuring users are not
+ * automatically logged in across app restarts.
  */
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [users, setUsers] = useLocalStorage('codyssey_users', []);
-  const [session, setSession] = useLocalStorage('codyssey_session', null);
+  const [users, setUsers] = useState([]);
+  const [session, setSession] = useState(null);
+
+  // Clear any legacy auth session/users stored in browser localStorage on mount
+  useEffect(() => {
+    try {
+      window.localStorage.removeItem('codyssey_users');
+      window.localStorage.removeItem('codyssey_session');
+    } catch (err) {
+      console.warn('Failed to clear legacy auth storage', err);
+    }
+  }, []);
 
   const signUp = useCallback(
     ({ name, email, password }) => {
@@ -31,7 +40,7 @@ export function AuthProvider({ children }) {
       setSession({ userId: newUser.id });
       return { success: true, user: newUser };
     },
-    [users, setUsers, setSession]
+    [users]
   );
 
   const signIn = useCallback(
@@ -45,12 +54,12 @@ export function AuthProvider({ children }) {
       setSession({ userId: user.id });
       return { success: true, user };
     },
-    [users, setSession]
+    [users]
   );
 
   const logout = useCallback(() => {
     setSession(null);
-  }, [setSession]);
+  }, []);
 
   const completeOnboarding = useCallback(
     (profileData) => {
@@ -62,7 +71,7 @@ export function AuthProvider({ children }) {
         )
       );
     },
-    [session, setUsers]
+    [session]
   );
 
   const currentUser = useMemo(

@@ -218,7 +218,7 @@ export default function InteractiveLesson({
               fullWidth
               variant="secondary"
               onClick={handleAttemptAgain}
-              style={{ marginBottom: 10 }}
+              style={{ marginBottom: 22 }}
             >
               🔄 Attempt Again
             </Button>
@@ -229,6 +229,7 @@ export default function InteractiveLesson({
             size="lg"
             fullWidth
             onClick={() => onFinish(rewardXP)}
+            style={{ marginBottom: 16 }}
           >
             {alreadyCompleted
               ? `⚡ Claim +${rewardXP} Practice XP`

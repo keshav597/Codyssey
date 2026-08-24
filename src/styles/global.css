@@ -184,11 +184,7 @@ select:focus-visible {
   to { transform: rotate(360deg); }
 }
 .ray-burst {
-  position: absolute;
-  inset: -40%;
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.12) 8deg, transparent 16deg, transparent 44deg, rgba(255,255,255,0.12) 52deg, transparent 60deg);
-  animation: ray-spin 6s linear infinite;
-  pointer-events: none;
+  display: none;
 }
 
 /* Combo meter */

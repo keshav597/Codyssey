@@ -31,7 +31,6 @@
 .navbar-stat--level { color: var(--primary); }
 
 .navbar-stat--streak-lit {
-  animation: pulse-glow 2.2s ease-in-out infinite;
   border-color: rgba(255, 122, 69, 0.4);
 }
 
