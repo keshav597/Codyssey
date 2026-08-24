@@ -50,6 +50,7 @@ export default function InteractiveLesson({
   const [stepIndex, setStepIndex] = useState(0);
   const [correctStreak, setCorrectStreak] = useState(0);
   const [mistakes, setMistakes] = useState(0);
+  const [attemptKey, setAttemptKey] = useState(0);
 
   // Calculate XP according to mistakes
   const getRewardXP = () => {
@@ -83,6 +84,7 @@ export default function InteractiveLesson({
   };
 
   const handleAttemptAgain = () => {
+    setAttemptKey((k) => k + 1);
     setStepIndex(0);
     setCorrectStreak(0);
     setMistakes(0);
@@ -137,6 +139,7 @@ export default function InteractiveLesson({
       {/* FILL BLANK */}
       {currentStep === 'fillBlank' && fillBlank && (
         <FillBlankExercise
+          key={`fillBlank-${attemptKey}`}
           exercise={fillBlank}
           onComplete={advance}
         />
@@ -145,6 +148,7 @@ export default function InteractiveLesson({
       {/* QUICK CHECK */}
       {currentStep === 'quickCheck' && quickCheck && (
         <QuickCheckStep
+          key={`quickCheck-${attemptKey}`}
           question={quickCheck}
           onComplete={advance}
         />

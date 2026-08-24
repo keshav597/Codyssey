@@ -8,7 +8,17 @@ export default function CollegePage({ value, onSelect }) {
       <p className="text-secondary" style={{ fontSize: 13, marginBottom: 20 }}>
         Join your campus leaderboards & represent your university in Codyssey!
       </p>
-      <div className="setup-options" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+      <div
+        className="setup-options"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: 12,
+          maxHeight: 'min(420px, 50vh)',
+          overflowY: 'auto',
+          paddingRight: 4,
+        }}
+      >
         {collegeDetails.map((c) => (
           <button
             key={c.id}

@@ -20,10 +20,10 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
               style={{
                 width: '100%',
                 maxWidth: 720,
-                border: isCurrent ? '2px solid var(--primary)' : '1px solid var(--border)',
-                background: isLocked ? 'var(--surface-alt)' : 'var(--surface)',
+                border: isCurrent ? '2px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)',
+                background: isLocked ? '#0e1426' : '#121a30',
                 opacity: isLocked ? 0.75 : 1,
-                boxShadow: isCurrent ? 'var(--shadow-glow-primary)' : 'var(--shadow)',
+                boxShadow: isCurrent ? '0 0 28px rgba(99, 102, 241, 0.4)' : '0 10px 34px rgba(0, 0, 0, 0.5)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
@@ -33,8 +33,8 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
                       width: 48,
                       height: 48,
                       borderRadius: 14,
-                      background: skill.color ? `${skill.color}22` : 'var(--surface-hover)',
-                      border: `1px solid ${skill.color || 'var(--border)'}`,
+                      background: skill.color ? `${skill.color}22` : '#1b2544',
+                      border: `1px solid ${skill.color || 'rgba(255, 255, 255, 0.08)'}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -64,7 +64,7 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
                 </div>
 
                 <div style={{ minWidth: 140, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-                  <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: skill.color || 'var(--primary)' }}>
+                  <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: skill.color || '#6366f1' }}>
                     {skill.progress}% Done
                   </span>
                   <div style={{ width: 120 }}>
@@ -74,7 +74,7 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
               </div>
 
               {/* Action */}
-              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="text-muted" style={{ fontSize: 12 }}>
                   {isLocked ? 'Complete previous level to unlock' : `${skill.progress}% of topic material completed`}
                 </span>
@@ -92,8 +92,8 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
             {/* Downward connecting line between steps */}
             {index < skills.length - 1 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0' }}>
-                <div style={{ width: 2, height: 24, background: isCompleted ? 'var(--success)' : 'var(--border)' }} />
-                <ArrowDown size={14} color={isCompleted ? 'var(--success)' : 'var(--text-muted)'} />
+                <div style={{ width: 2, height: 24, background: isCompleted ? '#2dd4a7' : 'rgba(255, 255, 255, 0.08)' }} />
+                <ArrowDown size={14} color={isCompleted ? '#2dd4a7' : '#656d92'} />
               </div>
             )}
           </div>

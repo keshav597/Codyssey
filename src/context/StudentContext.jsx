@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '../hooks/useAuth';
 import { skills, skillOrder } from '../data/skills';
 import { badges as badgeData } from '../data/badges';
 import { quests as questData } from '../data/quests';
@@ -13,9 +14,10 @@ const DEFAULT_STATE = {
   xp: 0,
   completedLessonIds: [],
   completedQuestIds: [],
+  completedQuizIds: [],
   unlockedBadgeIds: [],
   quizHistory: [], // { id, skillId, correct, total, xpAwarded, date }
-  streak: { count: 1, lastActiveDate: null },
+  streak: { count: 0, lastActiveDate: null },
   settings: {
     displayName: 'Coder',
     learningPreference: 'Web Development',
@@ -41,7 +43,25 @@ function daysBetween(a, b) {
 }
 
 export function StudentProvider({ children }) {
-  const [student, setStudent] = useLocalStorage('codyssey_student', DEFAULT_STATE);
+  const { currentUser } = useAuth();
+
+  const storageKey = useMemo(() => {
+    if (!currentUser?.id) return 'codyssey_student_guest';
+    const userKey = `codyssey_student_${currentUser.id}`;
+    try {
+      if (window.localStorage.getItem(userKey) === null) {
+        const legacy = window.localStorage.getItem('codyssey_student');
+        if (legacy !== null) {
+          window.localStorage.setItem(userKey, legacy);
+        }
+      }
+    } catch (e) {
+      console.warn('Storage check failed', e);
+    }
+    return userKey;
+  }, [currentUser?.id]);
+
+  const [student, setStudent] = useLocalStorage(storageKey, DEFAULT_STATE);
   const [lastUnlockedBadge, setLastUnlockedBadge] = useState(null);
   const [lastLevelUp, setLastLevelUp] = useState(null);
   const [lastComboBonus, setLastComboBonus] = useState(null);
@@ -165,10 +185,32 @@ export function StudentProvider({ children }) {
     (lessonId, xpAmount = XP_REWARDS.LESSON_COMPLETE) => {
       setStudent((prev) => {
         const isNew = !prev.completedLessonIds.includes(lessonId);
+        const updatedLessonIds = isNew ? [...prev.completedLessonIds, lessonId] : prev.completedLessonIds;
+
+        // Check if completing this lesson completes any requiresLessonIds quests
+        const newlyCompletedQuestIds = [];
+        let additionalQuestXP = 0;
+
+        questData.forEach((q) => {
+          if (q.requiresLessonIds && q.requiresLessonIds.length > 0) {
+            const allReqsDone = q.requiresLessonIds.every((id) => updatedLessonIds.includes(id));
+            const wasAlreadyDone = prev.completedQuestIds.includes(q.id);
+            if (allReqsDone && !wasAlreadyDone && !newlyCompletedQuestIds.includes(q.id)) {
+              newlyCompletedQuestIds.push(q.id);
+              additionalQuestXP += (q.xp || XP_REWARDS.QUEST_COMPLETE);
+            }
+          }
+        });
+
+        const updatedQuestIds = newlyCompletedQuestIds.length > 0
+          ? [...prev.completedQuestIds, ...newlyCompletedQuestIds]
+          : prev.completedQuestIds;
+
         let next = {
           ...prev,
-          completedLessonIds: isNew ? [...prev.completedLessonIds, lessonId] : prev.completedLessonIds,
-          xp: addXP(prev.xp, xpAmount),
+          completedLessonIds: updatedLessonIds,
+          completedQuestIds: updatedQuestIds,
+          xp: addXP(prev.xp, xpAmount + additionalQuestXP),
         };
         next = bumpStreak(next);
         next = applyBadgeUnlocks(next);
@@ -203,28 +245,72 @@ export function StudentProvider({ children }) {
 
   const submitQuizResult = useCallback(
     ({ skillId, correct, total, questId, comboBonus = 0 }) => {
-      const baseXP = calculateQuizXP(correct, total);
-      const xpAmount = baseXP + comboBonus;
+      const quizIdentifier = questId || `quiz-${skillId}`;
+      let finalAwardedXP = 0;
+
       setStudent((prev) => {
+        const completedQuests = prev.completedQuestIds || [];
+        const completedQuizzes = prev.completedQuizIds || [];
+
+        // Check if this quiz has already awarded XP previously
+        const isQuestDone = questId ? completedQuests.includes(questId) : false;
+        const isQuizDone = completedQuizzes.includes(quizIdentifier);
+        const hasHistoryXP = (prev.quizHistory || []).some(
+          (h) =>
+            (h.quizId === quizIdentifier ||
+              (questId && h.questId === questId) ||
+              (!h.quizId && !h.questId && !questId && h.skillId === skillId)) &&
+            h.xpAwarded > 0
+        );
+
+        const alreadyAwarded = isQuestDone || isQuizDone || hasHistoryXP;
+
+        let xpAmount = 0;
+        if (!alreadyAwarded) {
+          const baseXP = calculateQuizXP(correct, total);
+          xpAmount = baseXP + comboBonus;
+        }
+
+        finalAwardedXP = xpAmount;
+
+        const updatedCompletedQuests =
+          questId && !completedQuests.includes(questId)
+            ? [...completedQuests, questId]
+            : completedQuests;
+
+        const updatedCompletedQuizzes = !completedQuizzes.includes(quizIdentifier)
+          ? [...completedQuizzes, quizIdentifier]
+          : completedQuizzes;
+
         let next = {
           ...prev,
+          completedQuestIds: updatedCompletedQuests,
+          completedQuizIds: updatedCompletedQuizzes,
           xp: addXP(prev.xp, xpAmount),
           quizHistory: [
             ...prev.quizHistory,
-            { id: `quiz-${Date.now()}`, skillId, correct, total, xpAwarded: xpAmount, date: todayString() },
+            {
+              id: `quiz-${Date.now()}`,
+              quizId: quizIdentifier,
+              questId: questId || null,
+              skillId,
+              correct,
+              total,
+              xpAwarded: xpAmount,
+              date: todayString(),
+            },
           ],
         };
-        if (questId && !next.completedQuestIds.includes(questId)) {
-          next.completedQuestIds = [...next.completedQuestIds, questId];
-        }
+
         next = bumpStreak(next);
         next = applyBadgeUnlocks(next);
         const leveledUp = getLevelUpIfAny(prev.xp, next.xp);
         if (leveledUp) next.pendingLevelUp = leveledUp;
         return next;
       });
-      if (comboBonus > 0) setLastComboBonus(comboBonus);
-      return xpAmount;
+
+      if (comboBonus > 0 && finalAwardedXP > 0) setLastComboBonus(comboBonus);
+      return finalAwardedXP;
     },
     [setStudent, bumpStreak, applyBadgeUnlocks, getLevelUpIfAny]
   );
@@ -254,11 +340,6 @@ export function StudentProvider({ children }) {
   // ---- Consume transient markers as real effects (not inside the setState
   // updater above, which must stay pure — see getLevelUpIfAny/applyBadgeUnlocks). ----
   useEffect(() => {
-    const theme = student.settings?.theme || 'dark';
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [student.settings?.theme]);
-
-  useEffect(() => {
     if (student.pendingBadgeUnlock) {
       setLastUnlockedBadge(student.pendingBadgeUnlock);
       setStudent((prev) => ({ ...prev, pendingBadgeUnlock: null }));
@@ -273,10 +354,10 @@ export function StudentProvider({ children }) {
   }, [student.pendingLevelUp, setStudent]);
 
   const effectiveStudent = useMemo(() => {
-    if (!student || !student.streak || student.streak.count < 1) {
+    if (!student || !student.streak) {
       return {
-        ...student,
-        streak: { ...(student?.streak || {}), count: 1 },
+        ...(student || DEFAULT_STATE),
+        streak: { count: 0, lastActiveDate: null },
       };
     }
     return student;

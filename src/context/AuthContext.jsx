@@ -1,26 +1,16 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 /**
- * AuthContext — demo, client-side-only authentication.
- * Accounts and sessions are maintained in React memory (useState)
- * without persisting to browser localStorage, ensuring users are not
- * automatically logged in across app restarts.
+ * AuthContext — client-side authentication with persistent localStorage session.
+ * Registered users and active sessions are stored in browser localStorage
+ * so that users remain logged in across page refreshes.
  */
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [users, setUsers] = useState([]);
-  const [session, setSession] = useState(null);
-
-  // Clear any legacy auth session/users stored in browser localStorage on mount
-  useEffect(() => {
-    try {
-      window.localStorage.removeItem('codyssey_users');
-      window.localStorage.removeItem('codyssey_session');
-    } catch (err) {
-      console.warn('Failed to clear legacy auth storage', err);
-    }
-  }, []);
+  const [users, setUsers] = useLocalStorage('codyssey_users', []);
+  const [session, setSession] = useLocalStorage('codyssey_session', null);
 
   const signUp = useCallback(
     ({ name, email, password }) => {

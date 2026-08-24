@@ -32,7 +32,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Campus Badge */}
-          <div style={{ margin: '14px 0', padding: 12, borderRadius: 10, background: 'var(--surface-alt)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ margin: '14px 0', padding: 12, borderRadius: 10, background: '#0e1426', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 24 }}>{collegeObj?.badge || '🎓'}</span>
             <div>
               <strong style={{ fontSize: 13, display: 'block' }}>{collegeName}</strong>

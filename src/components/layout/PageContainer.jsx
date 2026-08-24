@@ -14,6 +14,11 @@ import './PageContainer.css';
 export default function PageContainer({ title, children }) {
   const { lastLevelUp, clearLevelUpToast, lastUnlockedBadge, clearBadgeToast } = useProgress();
 
+  // If both a level-up and an achievement badge trigger simultaneously,
+  // queue them sequentially so LevelUpModal displays first, followed by AchievementModal.
+  const activeLevelUp = lastLevelUp;
+  const activeBadge = activeLevelUp ? null : lastUnlockedBadge;
+
   return (
     <div className="app-shell">
       <div className="app-mesh-bg" />
@@ -22,8 +27,8 @@ export default function PageContainer({ title, children }) {
         <Navbar title={title} />
         {children}
       </main>
-      <LevelUpModal level={lastLevelUp} onClose={clearLevelUpToast} />
-      <AchievementModal badge={lastUnlockedBadge} onClose={clearBadgeToast} />
+      <LevelUpModal level={activeLevelUp} onClose={clearLevelUpToast} />
+      <AchievementModal badge={activeBadge} onClose={clearBadgeToast} />
     </div>
   );
 }

@@ -35,9 +35,9 @@ export default function NodeDetails({ skill, completedLessonIds, quests, onClose
             return (
               <div className="node-details__topic" key={lesson.id}>
                 {done ? (
-                  <CheckCircle2 size={16} color="var(--success)" />
+                  <CheckCircle2 size={16} color="#2dd4a7" />
                 ) : (
-                  <Circle size={16} color="var(--text-muted)" />
+                  <Circle size={16} color="#656d92" />
                 )}
                 <span className={done ? 'text-secondary' : ''}>{lesson.title}</span>
               </div>

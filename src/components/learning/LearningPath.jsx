@@ -13,8 +13,8 @@ export default function LearningPath({ lessons, completedLessonIds, activeLesson
             onClick={() => onSelect(lesson)}
             className="skill-filter__btn"
             style={{
-              borderColor: active ? 'var(--primary)' : undefined,
-              color: done ? 'var(--success)' : active ? 'var(--primary)' : undefined,
+              borderColor: active ? '#6366f1' : undefined,
+              color: done ? '#2dd4a7' : active ? '#6366f1' : undefined,
               flexShrink: 0,
             }}
           >

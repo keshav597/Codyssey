@@ -6,7 +6,7 @@ import Button from '../components/common/Button';
 import { dailyGoalOptions } from '../data/courses';
 import { collegeDetails } from '../data/colleges';
 import { useProgress } from '../hooks/useProgress';
-import { Building2, Moon, Sun } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { student, updateSettings, setOnboarding, resetProgress } = useProgress();
@@ -14,7 +14,6 @@ export default function SettingsPage() {
   const [confirmingReset, setConfirmingReset] = useState(false);
 
   const currentCollege = student.onboarding?.college || 'Chitkara University';
-  const currentTheme = student.settings.theme || 'dark';
 
   const saveName = () => updateSettings({ displayName });
 
@@ -43,7 +42,7 @@ export default function SettingsPage() {
       {/* University Section */}
       <Card className="settings-section" style={{ marginBottom: 20 }}>
         <h3 style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Building2 size={18} color="var(--primary)" /> University & Campus
+          <Building2 size={18} color="#6366f1" /> University & Campus
         </h3>
         <p className="text-secondary" style={{ fontSize: 13, marginBottom: 14 }}>
           Select your university to participate in campus standings & leaderboards.
@@ -77,36 +76,6 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* Theme Section */}
-      <Card className="settings-section" style={{ marginBottom: 20 }}>
-        <h3 style={{ marginBottom: 6 }}>Appearance Theme</h3>
-        <p className="text-secondary" style={{ fontSize: 13, marginBottom: 14 }}>
-          Switch between sleek Dark mode and clean Light mode.
-        </p>
-
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            className={`setup-option ${currentTheme === 'dark' ? 'setup-option--selected' : ''}`}
-            onClick={() => updateSettings({ theme: 'dark' })}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', fontSize: 14 }}
-          >
-            <Moon size={18} color="var(--primary)" />
-            <span>Dark Cyberpunk Mode (Default)</span>
-          </button>
-
-          <button
-            type="button"
-            className={`setup-option ${currentTheme === 'light' ? 'setup-option--selected' : ''}`}
-            onClick={() => updateSettings({ theme: 'light' })}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', fontSize: 14 }}
-          >
-            <Sun size={18} color="var(--warning)" />
-            <span>Clean Light Mode</span>
-          </button>
-        </div>
-      </Card>
-
       {/* Daily Goal Section */}
       <Card className="settings-section" style={{ marginBottom: 20 }}>
         <h3 style={{ marginBottom: 14 }}>Daily Goal</h3>
@@ -125,7 +94,7 @@ export default function SettingsPage() {
 
       {/* Danger Zone */}
       <Card className="settings-section">
-        <h3 style={{ marginBottom: 10, color: 'var(--danger)' }}>Danger Zone</h3>
+        <h3 style={{ marginBottom: 10, color: '#fb4570' }}>Danger Zone</h3>
         <p className="text-secondary" style={{ fontSize: 13, marginBottom: 14 }}>
           This clears all XP, levels, streaks, badges, and lesson/quest progress stored in this browser.
         </p>
@@ -134,7 +103,7 @@ export default function SettingsPage() {
         ) : (
           <div style={{ display: 'flex', gap: 10 }}>
             <Button variant="ghost" onClick={() => setConfirmingReset(false)}>Cancel</Button>
-            <Button onClick={handleReset} variant="secondary" style={{ color: 'var(--danger)' }}>
+            <Button onClick={handleReset} variant="secondary" style={{ color: '#fb4570' }}>
               Confirm Reset
             </Button>
           </div>

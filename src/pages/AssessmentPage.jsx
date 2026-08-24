@@ -31,6 +31,7 @@ export default function AssessmentPage() {
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [xpAwarded, setXpAwarded] = useState(0);
   const [comboBonusEarned, setComboBonusEarned] = useState(0);
 
@@ -43,6 +44,7 @@ export default function AssessmentPage() {
     setCombo(0);
     setMaxCombo(0);
     setFinished(false);
+    setIsSubmitting(false);
     setXpAwarded(0);
     setComboBonusEarned(0);
   };
@@ -74,12 +76,14 @@ export default function AssessmentPage() {
   };
 
   const handleNext = () => {
+    if (isSubmitting) return;
     if (index < questions.length - 1) {
       setIndex((i) => i + 1);
       setSelected(null);
       setRevealed(false);
       return;
     }
+    setIsSubmitting(true);
     const finalComboBonus = maxCombo >= 3 ? (maxCombo - 2) * COMBO_BONUS_PER_STEP : 0;
     const awarded = submitQuizResult({
       skillId,
@@ -143,8 +147,8 @@ export default function AssessmentPage() {
         )}
 
         <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={handleNext} disabled={!revealed}>
-            {index < questions.length - 1 ? 'Next Question' : 'See Results'}
+          <Button onClick={handleNext} disabled={!revealed || isSubmitting}>
+            {index < questions.length - 1 ? 'Next Question' : isSubmitting ? 'Submitting...' : 'See Results'}
           </Button>
         </div>
       </Card>

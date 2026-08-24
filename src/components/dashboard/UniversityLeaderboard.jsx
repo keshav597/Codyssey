@@ -16,7 +16,7 @@ export default function UniversityLeaderboard({ userCollege }) {
       <div className="univ-card__header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div className="univ-card__icon-badge">
-            <Trophy size={20} color="var(--xp)" />
+            <Trophy size={20} color="#ffc23c" />
           </div>
           <div>
             <h3 style={{ fontSize: 17, fontWeight: 700 }}>University Standings</h3>
@@ -55,7 +55,7 @@ export default function UniversityLeaderboard({ userCollege }) {
                       <span className="univ-row__tag">YOUR CAMPUS</span>
                     )}
                   </div>
-                  <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: 'var(--xp)' }}>
+                  <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: '#ffc23c' }}>
                     {univ.totalXP.toLocaleString()} XP
                   </span>
                 </div>
