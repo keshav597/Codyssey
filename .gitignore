@@ -2,3 +2,9 @@ node_modules
 dist
 .DS_Store
 *.local
+
+src/components/assessment/
+src/components/learning/
+
+src/components/assessment/
+src/components/learning/
