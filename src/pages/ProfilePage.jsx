@@ -49,7 +49,7 @@ export default function ProfilePage() {
 
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <h3 style={{ fontSize: 16 }}>Syllabus Skills (Lec 1–42)</h3>
+            <h3 style={{ fontSize: 16 }}>Skills</h3>
             <span className="badge-chip badge-chip--primary" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
               <BookOpen size={12} /> Phase-I Aligned
             </span>
@@ -75,4 +75,4 @@ export default function ProfilePage() {
     </PageContainer>
   );
 }
-
+
