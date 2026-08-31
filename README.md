@@ -100,7 +100,7 @@ codeforge/
 │   │   ├── skills/         SkillCard, SkillProgress, SkillFilter
 │   │   ├── quests/         QuestCard, QuestList, QuestDetails
 │   │   ├── learning/       LessonCard, LessonContent, LearningPath
-│   │   ├── assessment/     QuestionCard, Option, QuizTimer, QuizResult
+│   │   ├── assessment/     QuestionCard, Option, QuizResult
 │   │   ├── coding/         CodeEditor (simulated, read-only), ProblemStatement, TestCase
 │   │   └── rewards/        AchievementModal, XPReward, BadgeGrid
 │   ├── pages/
@@ -164,7 +164,7 @@ npm run preview    # preview the production build
 | DOM/events, browser storage, JSON | `useLocalStorage.js` |
 | Promises/async-await (conceptually taught) | `lessons.js` (`js-8`), `questions.js` |
 | React basics: JSX, components, props, state, lists, conditional rendering | Every component in `components/` |
-| useState, useEffect, useRef/useMemo/useCallback (used with real purpose) | `StudentContext.jsx` (`useMemo`/`useCallback`), `QuizTimer.jsx` (`useEffect`) |
+| useState, useEffect, useRef/useMemo/useCallback (used with real purpose) | `StudentContext.jsx` (`useMemo`/`useCallback`), `AssessmentPage.jsx` (`useEffect`) |
 | Custom hooks | `useLocalStorage`, `useAuth`, `useProgress` |
 | React Router, protected/nested routes | `App.jsx`, `ProtectedRoute.jsx` |
 

@@ -11,21 +11,45 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   white-space: nowrap;
 }
-.btn:active { transform: translateY(1px); }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
-.btn--sm { padding: 8px 14px; font-size: 13px; }
-.btn--md { padding: 12px 20px; font-size: 14px; }
-.btn--lg { padding: 15px 28px; font-size: 15px; }
+.btn:active {
+  transform: translateY(1px);
+}
 
-.btn--full { width: 100%; }
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
 
-.btn--primary, .btn--success {
+.btn--sm {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.btn--md {
+  padding: 12px 20px;
+  font-size: 14px;
+}
+
+.btn--lg {
+  padding: 15px 28px;
+  font-size: 15px;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--primary,
+.btn--success {
   background: linear-gradient(135deg, #6366f1, #c026d3);
   color: #ffffff;
   box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
 }
-.btn--primary:hover:not(:disabled), .btn--success:hover:not(:disabled) {
+
+.btn--primary:hover:not(:disabled),
+.btn--success:hover:not(:disabled) {
   background: linear-gradient(135deg, #6366f1, #c026d3);
   box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
   transform: translateY(-1px);
@@ -36,6 +60,7 @@
   color: #ffffff;
   border: 1px solid rgba(192, 38, 211, 0.5);
 }
+
 .btn--secondary:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(192, 38, 211, 0.3));
   border-color: rgba(192, 38, 211, 0.8);
@@ -47,6 +72,7 @@
   color: #ffffff;
   border: 1px solid rgba(99, 102, 241, 0.25);
 }
+
 .btn--ghost:hover:not(:disabled) {
   background: rgba(99, 102, 241, 0.12);
   color: #ffffff;

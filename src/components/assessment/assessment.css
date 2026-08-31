@@ -6,16 +6,14 @@
 }
 
 .question-card__counter {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-size: 13px;
-  color: #c026d3;
+  color: #c6c4c6;
 }
 
 .question-card__prompt {
   font-size: 17px;
   font-weight: 600;
   white-space: pre-wrap;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
   background: #0e1426;
   padding: 16px;
   border-radius: 10px;
@@ -90,6 +88,5 @@
 }
 
 .quiz-result__score {
-  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   font-size: 40px;
 }
