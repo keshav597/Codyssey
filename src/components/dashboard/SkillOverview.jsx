@@ -14,11 +14,13 @@ export default function SkillOverview({ skills }) {
         <div className="skill-overview__row" key={skill.id}>
           <div className="skill-overview__row-top">
             <span className="skill-overview__name">
-              {skill.icon} {skill.name}
+              {skill.icon} {skill.name} {skill.status === 'locked' && <span style={{ fontSize: 11, color: '#b45309' }}>🔒 {skill.requiredXP} XP</span>}
             </span>
-            <span className="mono text-secondary">{skill.progress}%</span>
+            <span className="mono text-secondary">
+              {skill.status === 'locked' ? 'Locked' : `${skill.progress}%`}
+            </span>
           </div>
-          <ProgressBar percent={skill.progress} color={skill.color} height={8} />
+          <ProgressBar percent={skill.status === 'locked' ? 0 : skill.progress} color={skill.color} height={8} />
         </div>
       ))}
     </Card>

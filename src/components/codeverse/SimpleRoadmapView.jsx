@@ -73,17 +73,22 @@ export default function SimpleRoadmapView({ skills, completedLessonIds }) {
                 </div>
               </div>
 
-              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid rgba(212, 175, 55, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="text-muted" style={{ fontSize: 12 }}>
-                  {isLocked ? 'Complete previous level to unlock' : `${skill.progress}% of topic material completed`}
+                  {isLocked ? `🔒 Unlocks at ${skill.requiredXP} XP (Need 100 XP per skill)` : `${skill.progress}% of topic material completed`}
                 </span>
                 <Button
                   variant={isLocked ? 'ghost' : isCurrent ? 'primary' : 'secondary'}
-                  disabled={isLocked}
-                  onClick={() => navigate('learn', { skillId: skill.id })}
+                  onClick={() => {
+                    if (isLocked) {
+                      navigate('quiz', { skillId: 'html', questTitle: 'Mastery Quiz', questionCount: 5 });
+                    } else {
+                      navigate('learn', { skillId: skill.id });
+                    }
+                  }}
                   style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13 }}
                 >
-                  <Play size={13} /> {isCompleted ? 'Review Level' : 'Start Level'}
+                  <Play size={13} /> {isLocked ? `Reach ${skill.requiredXP} XP` : isCompleted ? 'Review Level' : 'Start Level'}
                 </Button>
               </div>
             </Card>

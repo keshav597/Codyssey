@@ -44,22 +44,37 @@ export default function NodeDetails({ skill, completedLessonIds, quests, onClose
           })}
         </div>
 
-        {nextQuest && (
-          <div className="node-details__quest">
-            <strong>NEXT QUEST</strong>
-            <span>{nextQuest.title} — <span className="mono">+{nextQuest.xp} XP</span></span>
-          </div>
-        )}
+        <div className="node-details__quest">
+          <strong>👑 100 XP MASTERY ASSESSMENT</strong>
+          <span>5 questions · 20 XP each · Reattempt until 100 XP achieved</span>
+        </div>
 
-        <Button
-          fullWidth
-          onClick={() => {
-            onClose();
-            navigate('learn', { skillId: skill.id });
-          }}
-        >
-          Continue Learning
-        </Button>
+        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+          <Button
+            style={{ flex: 1 }}
+            variant="primary"
+            onClick={() => {
+              onClose();
+              navigate('quiz', {
+                skillId: skill.id,
+                questTitle: `${skill.name} Mastery Assessment`,
+                questionCount: 5,
+              });
+            }}
+          >
+            👑 Take Quiz
+          </Button>
+          <Button
+            style={{ flex: 1 }}
+            variant="secondary"
+            onClick={() => {
+              onClose();
+              navigate('learn', { skillId: skill.id });
+            }}
+          >
+            Study Lessons
+          </Button>
+        </div>
       </div>
     </Modal>
   );

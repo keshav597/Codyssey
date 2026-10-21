@@ -83,30 +83,27 @@ export default function LandingPage() {
             <span className="landing-nav__mark">⚡</span> Codyssey
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Link to="signin">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link to="signup">
-              <Button size="sm">Get Started</Button>
+            <Link to="dashboard">
+              <Button size="md" variant="primary">👑 Open Dashboard</Button>
             </Link>
           </div>
         </nav>
 
         <section className="landing-hero">
-          <p className="eyebrow landing-hero__eyebrow">Learn. Play. Build. Level Up.</p>
+          <p className="eyebrow landing-hero__eyebrow">Learn. Master. Build. Level Up.</p>
           <h1>
-            Turn learning to code into <span className="gradient-text">a game you actually want to play.</span>
+            Turn learning to code into <span className="gradient-text">a royal quest you love to conquer.</span>
           </h1>
           <p>
-            Codyssey is a gamified programming platform. Complete quests, earn XP, level up,
-            and watch your Codeverse light up as you master HTML, CSS, JavaScript, and React.
+            Codyssey is a gamified programming academy. Earn 20 XP per question, hit 100 XP to master skills,
+            and watch your Codeverse unlock progressively as you master HTML, CSS, JavaScript, and React.
           </p>
           <div className="landing-hero__ctas">
-            <Link to="signup">
-              <Button size="lg">START YOUR ODYSSEY 🚀</Button>
+            <Link to="dashboard">
+              <Button size="lg" variant="primary">ENTER THE ACADEMY 👑</Button>
             </Link>
-            <Link to="signin">
-              <Button size="lg" variant="secondary">I already have an account</Button>
+            <Link to="learn">
+              <Button size="lg" variant="secondary">Explore Curriculum</Button>
             </Link>
           </div>
         </section>

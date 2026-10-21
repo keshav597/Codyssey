@@ -1,11 +1,11 @@
 
 export const LEVELS = [
-  { level: 1, title: 'Rookie', minXP: 0 },
-  { level: 2, title: 'Explorer', minXP: 200 },
-  { level: 3, title: 'Coder', minXP: 500 },
-  { level: 4, title: 'Builder', minXP: 900 },
-  { level: 5, title: 'Developer', minXP: 1400 },
-  { level: 6, title: 'Code Master', minXP: 2000 },
+  { level: 1, title: 'HTML Apprentice', minXP: 0 },
+  { level: 2, title: 'CSS Adept', minXP: 100 },
+  { level: 3, title: 'JS Scholar', minXP: 200 },
+  { level: 4, title: 'React Master', minXP: 300 },
+  { level: 5, title: 'Royal Architect', minXP: 400 },
+  { level: 6, title: 'Imperial Grandmaster', minXP: 500 },
 ];
 
 export function calculateLevel(xp) {

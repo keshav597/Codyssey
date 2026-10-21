@@ -1,20 +1,15 @@
-import { createContext, useEffect, useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { createContext, useState } from 'react';
 
 export const NavigationContext = createContext(null);
 
-const PUBLIC_PAGES = ['landing', 'signin', 'signup', 'setup'];
-
 function sanitizePageName(raw) {
-  if (!raw) return 'landing';
+  if (!raw) return 'dashboard';
   const clean = String(raw).startsWith('/') ? raw.slice(1).toLowerCase() : String(raw).toLowerCase();
-  return clean || 'landing';
+  return clean || 'dashboard';
 }
 
 export function NavigationProvider({ children }) {
-  const { currentUser } = useAuth();
-
-  const [currentPage, setCurrentPage] = useState('landing');
+  const [currentPage, setCurrentPage] = useState('dashboard');
   const [pageParams, setPageParams] = useState({});
 
   function navigate(targetPage, params = {}) {
@@ -23,17 +18,11 @@ export function NavigationProvider({ children }) {
     setCurrentPage(clean);
   }
 
-  useEffect(() => {
-    if (!currentUser && !PUBLIC_PAGES.includes(currentPage)) {
-      setCurrentPage('landing');
-    }
-  }, [currentUser, currentPage]);
-
   const value = {
     currentPage,
     pageParams,
     navigate,
-    isPublicPage: PUBLIC_PAGES.includes(currentPage),
+    isPublicPage: ['landing', 'signin', 'signup'].includes(currentPage),
   };
 
   return <NavigationContext.Provider value={value}>{children}</NavigationContext.Provider>;

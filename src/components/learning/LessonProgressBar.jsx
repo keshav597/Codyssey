@@ -1,9 +1,8 @@
 import './learning.css';
 
-export default function LessonProgressBar({ stepIndex, totalSteps, onExit }) {
+export default function LessonProgressBar({ stepIndex, totalSteps}) {
   return (
     <div className="lesson-progress">
-      <button className="lesson-progress__exit" onClick={onExit} aria-label="Exit lesson">✕</button>
       <div className="lesson-progress__track">
         {Array.from({ length: totalSteps }).map((_, i) => (
           <div

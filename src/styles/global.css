@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -7,12 +7,12 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: #05070f;
-  color: #f5f6fc;
+  background: #fbfbfa;
+  color: #0f172a;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
@@ -24,8 +24,9 @@ body {
 
 h1, h2, h3, h4 {
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
 }
 
 a {
@@ -46,17 +47,18 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid #6366f1;
+  outline: 2px solid #d4af37;
   outline-offset: 2px;
 }
 
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1b2544; border-radius: 10px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #d4af37; }
 
 .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
-.text-secondary { color: #9ea6c9; }
-.text-muted { color: #656d92; }
+.text-secondary { color: #475569; }
+.text-muted { color: #64748b; }
 
 .container {
   max-width: 1200px;
@@ -66,31 +68,39 @@ select:focus-visible {
 
 .eyebrow {
   font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #c026d3;
+  color: #b45309;
+  font-weight: 700;
 }
 
 .page-enter {
   opacity: 1;
 }
 
+/* Royal Ambient Mesh Background */
 .app-mesh-bg {
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse 700px 500px at 8% -10%, rgba(99, 102, 241, 0.28), transparent 60%), radial-gradient(ellipse 600px 500px at 95% 10%, rgba(192, 38, 211, 0.22), transparent 55%), radial-gradient(ellipse 700px 600px at 50% 120%, rgba(34, 211, 238, 0.14), transparent 60%), #05070f;
+  background:
+    radial-gradient(ellipse 900px 600px at 10% -5%, rgba(212, 175, 55, 0.12), transparent 55%),
+    radial-gradient(ellipse 800px 500px at 95% 15%, rgba(184, 134, 11, 0.08), transparent 50%),
+    radial-gradient(ellipse 900px 700px at 50% 115%, rgba(217, 119, 6, 0.06), transparent 60%),
+    #fbfbfa;
   z-index: -1;
   pointer-events: none;
 }
 
 .glass {
-  background: #121a30;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 10px 30px -4px rgba(184, 134, 11, 0.06), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1, #c026d3 55%, #22d3ee);
+  background: linear-gradient(135deg, #b45309 0%, #d4af37 50%, #92400e 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -105,11 +115,11 @@ select:focus-visible {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #6366f1, #c026d3 55%, #22d3ee);
+  background: linear-gradient(135deg, #d4af37, #b45309 60%, #eab308);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  opacity: 0.5;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -117,22 +127,7 @@ select:focus-visible {
   display: inline-block;
 }
 
-.confetti-piece {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  top: 0;
-  border-radius: 2px;
-}
-
-.ray-burst {
-  display: none;
-}
-
-.combo-pop {
-  display: inline-block;
-}
-
 .shimmer-text {
-  color: #f5f6fc;
+  color: #b45309;
+  font-weight: 700;
 }

@@ -3,12 +3,18 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  
-  const [users, setUsers] = useLocalStorage('codyssey_users', []);
-  const [session, setSession] = useLocalStorage('codyssey_session', null);
+const DEFAULT_USER = {
+  id: 'user-royal',
+  name: 'Royal Scholar',
+  email: 'scholar@royal.academy',
+  onboardingComplete: true,
+  createdAt: new Date().toISOString(),
+};
 
-  
+export function AuthProvider({ children }) {
+  const [users, setUsers] = useLocalStorage('codyssey_users', [DEFAULT_USER]);
+  const [session, setSession] = useLocalStorage('codyssey_session', { userId: DEFAULT_USER.id });
+
   function signUp({ name, email, password }) {
     const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
     if (exists) {
@@ -16,10 +22,10 @@ export function AuthProvider({ children }) {
     }
     const newUser = {
       id: `user-${Date.now()}`,
-      name,
-      email,
-      password,
-      onboardingComplete: false,
+      name: name || 'Royal Scholar',
+      email: email || 'scholar@royal.academy',
+      password: password || '',
+      onboardingComplete: true,
       createdAt: new Date().toISOString(),
     };
     setUsers((prev) => [...prev, newUser]);
@@ -27,7 +33,6 @@ export function AuthProvider({ children }) {
     return { success: true, user: newUser };
   }
 
-  
   function signIn({ email, password }) {
     const user = users.find(
       (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
@@ -39,12 +44,17 @@ export function AuthProvider({ children }) {
     return { success: true, user };
   }
 
-  
   function logout() {
-    setSession(null);
+    // Keeps active guest/scholar state instead of locking user out
+    setSession({ userId: DEFAULT_USER.id });
   }
 
-  
+  function updateProfile(updatedData) {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === (session?.userId || DEFAULT_USER.id) ? { ...u, ...updatedData } : u))
+    );
+  }
+
   function completeOnboarding(profileData) {
     setUsers((prev) =>
       prev.map((u) =>
@@ -55,15 +65,16 @@ export function AuthProvider({ children }) {
     );
   }
 
-  
-  const currentUser = session ? users.find((u) => u.id === session.userId) || null : null;
+  const currentUser =
+    (session ? users.find((u) => u.id === session.userId) : null) || users[0] || DEFAULT_USER;
 
   const value = {
     currentUser,
-    isAuthenticated: Boolean(currentUser),
+    isAuthenticated: true,
     signUp,
     signIn,
     logout,
+    updateProfile,
     completeOnboarding,
   };
 

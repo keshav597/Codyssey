@@ -10,16 +10,8 @@ import { getQuestionsForSkill } from '../../data/questions';
 import { getLessonsForSkill } from '../../data/lessons';
 import './learning.css';
 
-export default function InteractiveLesson({
-  lesson,
-  alreadyCompleted,
-  onFinish,
-  onExit,
-}) {
-  const fillBlank = useMemo(
-    () => getFillBlankForLesson(lesson.id),
-    [lesson.id]
-  );
+export default function InteractiveLesson({lesson,alreadyCompleted,onFinish,onExit,}) {
+  const fillBlank = useMemo(() => getFillBlankForLesson(lesson.id),[lesson.id]);
 
   const quickCheck = useMemo(() => {
     const skillLessons = getLessonsForSkill(lesson.skillId);
@@ -72,6 +64,7 @@ export default function InteractiveLesson({
 
     setStepIndex((i) =>
       Math.min(i + 1, steps.length - 1)
+    // for prevention of ArrayOutOfBound
     );
   };
 
@@ -101,7 +94,6 @@ export default function InteractiveLesson({
 
             <h2>{lesson.title}</h2>
           </div>
-
           {lesson.content.map((para, i) => (
             <p
               key={i}
@@ -111,7 +103,6 @@ export default function InteractiveLesson({
               {para}
             </p>
           ))}
-
           {lesson.code && (
             <pre className="lesson-content__code">
               {lesson.code}
@@ -120,8 +111,7 @@ export default function InteractiveLesson({
 
           <Button
             fullWidth
-            onClick={() => advance(true)}
-          >
+            onClick={() => advance(true)}>
             Let's Practice →
           </Button>
         </div>
@@ -144,10 +134,8 @@ export default function InteractiveLesson({
       )}
 
       {currentStep === 'complete' && (
-        <div
-          className="lesson-complete"
-          style={{ position: 'relative' }}
-        >
+        <div className="lesson-complete"style={{ position: 'relative' }}>
+          
           {mistakes === 0 && steps.length > 2 && (
             <ConfettiBurst pieceCount={30} />
           )}
@@ -205,7 +193,7 @@ export default function InteractiveLesson({
               fullWidth
               variant="secondary"
               onClick={handleAttemptAgain}
-              style={{ marginBottom: 22 }}
+              style={{ marginBottom: 25 }}
             >
               🔄 Attempt Again
             </Button>

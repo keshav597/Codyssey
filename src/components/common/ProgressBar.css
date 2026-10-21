@@ -3,16 +3,18 @@
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: #9ea6c9;
+  color: #64748b;
+  font-weight: 500;
 }
 .progress-bar-track {
   width: 100%;
-  background: #0e1426;
+  background: #f1f5f9;
   border-radius: 999px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.15);
 }
 .progress-bar-fill {
   height: 100%;
   border-radius: 999px;
+  background: linear-gradient(90deg, #d4af37, #b8860b);
 }

@@ -7,7 +7,9 @@
   flex-wrap: wrap;
 }
 .navbar-title {
-  font-size: 24px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
 }
 .navbar-stats {
   display: flex;
@@ -19,18 +21,19 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #121a30;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(184, 134, 11, 0.05);
 }
-.navbar-stat--streak { color: #ff7a45; }
-.navbar-stat--xp { color: #ffc23c; }
-.navbar-stat--level { color: #6366f1; }
+.navbar-stat--streak { color: #d97706; }
+.navbar-stat--xp { color: #b45309; }
+.navbar-stat--level { color: #4338ca; }
 
 .navbar-stat--streak-lit {
-  border-color: rgba(255, 122, 69, 0.4);
+  border-color: rgba(217, 119, 6, 0.45);
+  background: #fef3c7;
 }
-

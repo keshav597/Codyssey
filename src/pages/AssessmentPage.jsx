@@ -16,10 +16,9 @@ export default function AssessmentPage() {
   
   const skillId = pageParams?.skillId || 'html';
   const questId = pageParams?.questId || null;
-  const questTitle = pageParams?.questTitle || 'Practice Quiz';
-  const questionCount = pageParams?.questionCount || (questId?.includes('daily') ? 3 : 5);
+  const questTitle = pageParams?.questTitle || 'Mastery Assessment';
+  const questionCount = pageParams?.questionCount || 5;
 
-  
   const [questions, setQuestions] = useState(() => getQuestionsForSkill(skillId, questionCount));
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -27,9 +26,8 @@ export default function AssessmentPage() {
   const [correctCount, setCorrectCount] = useState(0);
   const [finished, setFinished] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [xpAwarded, setXpAwarded] = useState(0);
+  const [submissionResult, setSubmissionResult] = useState(null);
 
-  
   const handleReattempt = () => {
     setQuestions(getQuestionsForSkill(skillId, questionCount));
     setIndex(0);
@@ -38,10 +36,9 @@ export default function AssessmentPage() {
     setCorrectCount(0);
     setFinished(false);
     setIsSubmitting(false);
-    setXpAwarded(0);
+    setSubmissionResult(null);
   };
 
-  
   if (!questions || questions.length === 0) {
     return (
       <PageContainer title="Quiz">
@@ -53,7 +50,6 @@ export default function AssessmentPage() {
   const current = questions[index];
   const isPerfect = finished && correctCount === questions.length;
 
-  
   const handleSelect = (optionIndex) => {
     setSelected(optionIndex);
     setRevealed(true);
@@ -62,11 +58,9 @@ export default function AssessmentPage() {
     }
   };
 
-  
   const handleNext = () => {
     if (isSubmitting) return;
 
-    
     if (index < questions.length - 1) {
       setIndex((prev) => prev + 1);
       setSelected(null);
@@ -74,21 +68,22 @@ export default function AssessmentPage() {
       return;
     }
 
-    
     setIsSubmitting(true);
-    const awarded = submitQuizResult({
+    const result = submitQuizResult({
       skillId,
       correct: correctCount,
       total: questions.length,
       questId,
     });
 
-    setXpAwarded(awarded);
+    setSubmissionResult(result);
     setFinished(true);
   };
 
-  
   if (finished) {
+    const finalScore = correctCount * 20;
+    const isPassed = finalScore >= 100;
+
     return (
       <PageContainer title={questTitle}>
         <Card style={{ position: 'relative', overflow: 'hidden' }}>
@@ -96,9 +91,12 @@ export default function AssessmentPage() {
           <QuizResult
             correct={correctCount}
             total={questions.length}
-            xpAwarded={xpAwarded}
+            score={finalScore}
+            passed={isPassed}
+            skillId={skillId}
+            xpAwarded={submissionResult?.awardedXP ?? 0}
             perfect={isPerfect}
-            onContinue={() => navigate('quests')}
+            onContinue={() => navigate('dashboard')}
             onReattempt={handleReattempt}
           />
         </Card>
@@ -106,9 +104,17 @@ export default function AssessmentPage() {
     );
   }
 
-  
   return (
     <PageContainer title={questTitle}>
+      <div className="quiz-royal-header">
+        <div className="quiz-royal-header__badge">
+          <span>👑 Target: 100 XP</span>
+        </div>
+        <div className="quiz-royal-header__note">
+          Each question is worth <strong>20 XP</strong> · Reach <strong>100 XP</strong> (5/5) to unlock next skill
+        </div>
+      </div>
+
       <Card>
         <QuestionCard
           question={current}
@@ -124,14 +130,17 @@ export default function AssessmentPage() {
             className={`quiz-feedback ${selected === current.correctIndex ? 'quiz-feedback--correct' : 'quiz-feedback--incorrect'}`}
             style={{ marginTop: 16 }}
           >
-            {selected === current.correctIndex ? '🎉 Correct! ' : '❌ Not quite. '}
+            {selected === current.correctIndex ? '🎉 Correct! (+20 XP) ' : '❌ Not quite. '}
             {current.explanation}
           </div>
         )}
 
-        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="text-secondary" style={{ fontSize: 13 }}>
+            Current score: <strong>{correctCount * 20} XP</strong>
+          </span>
           <Button onClick={handleNext} disabled={!revealed || isSubmitting}>
-            {index < questions.length - 1 ? 'Next Question' : isSubmitting ? 'Submitting...' : 'See Results'}
+            {index < questions.length - 1 ? 'Next Question →' : isSubmitting ? 'Submitting...' : 'Complete & See Results'}
           </Button>
         </div>
       </Card>

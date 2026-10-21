@@ -19,18 +19,20 @@
 
 .level-card__title {
   font-size: 15px;
-  color: #9ea6c9;
+  color: #475569;
+  font-weight: 500;
 }
 
 .level-card__badge {
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   font-size: 22px;
-  color: #6366f1;
+  font-weight: 700;
+  color: #b45309;
 }
 
 .level-card__xp-label {
   font-size: 13px;
-  color: #9ea6c9;
+  color: #64748b;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
@@ -41,7 +43,8 @@
   justify-content: center;
   gap: 6px;
   text-align: center;
-  background: linear-gradient(160deg, rgba(251, 122, 60, 0.12), transparent);
+  background: linear-gradient(160deg, #fff7ed, #ffffff);
+  border: 1.5px solid #fed7aa;
 }
 
 .streak-card__flame {
@@ -50,14 +53,17 @@
 
 .streak-card__count {
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-  font-size: 28px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #c2410c;
 }
 
 .streak-card__label {
   font-size: 12px;
-  color: #9ea6c9;
+  color: #9a3412;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 .today-plan {
@@ -79,9 +85,15 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: 10px;
-  background: #0e1426;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.quest-row:hover {
+  background: #fdfaf3;
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 .quest-row__info {
@@ -93,11 +105,12 @@
 .quest-row__title {
   font-weight: 600;
   font-size: 14px;
+  color: #0f172a;
 }
 
 .quest-row__meta {
   font-size: 12px;
-  color: #9ea6c9;
+  color: #64748b;
 }
 
 .skill-overview {
@@ -116,6 +129,8 @@
   display: flex;
   justify-content: space-between;
   font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
 }
 
 .skill-overview__name {
@@ -133,7 +148,7 @@
 
 .achievement-preview__grid {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -142,39 +157,38 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  width: 84px;
+  width: 86px;
   text-align: center;
 }
 
 .achievement-preview__icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: #1b2544;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: #fdfaf3;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 24px;
+  border: 1.5px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 2px 6px rgba(184, 134, 11, 0.08);
 }
 
 .achievement-preview__name {
   font-size: 11px;
-  color: #9ea6c9;
+  color: #475569;
+  font-weight: 500;
 }
 
 .empty-note {
   font-size: 13px;
-  color: #656d92;
+  color: #64748b;
   padding: 8px 0;
 }
 
 .streak-card--lit {
-  border-color: rgba(255, 122, 69, 0.35);
-}
-
-.streak-card__flame {
-  
+  border-color: #f97316;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.15);
 }
 
 .univ-card {
@@ -193,8 +207,8 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: rgba(255, 194, 60, 0.15);
-  border: 1px solid rgba(255, 194, 60, 0.3);
+  background: #fefce8;
+  border: 1px solid #fde047;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,21 +225,21 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 10px;
-  background: #0e1426;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .univ-row:hover {
-  background: #1b2544;
-  border-color: rgba(255, 255, 255, 0.18);
+  background: #fdfaf3;
+  border-color: rgba(212, 175, 55, 0.35);
 }
 
 .univ-row--highlight {
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.08);
+  border-color: #d4af37;
+  background: #fef9ee;
 }
 
 .univ-row__rank {
@@ -234,6 +248,7 @@
   font-size: 15px;
   width: 28px;
   text-align: center;
+  color: #b45309;
 }
 
 .univ-row__info {
@@ -247,7 +262,7 @@
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
-  background: #6366f1;
+  background: #b45309;
   color: #fff;
   letter-spacing: 0.06em;
 }
@@ -256,7 +271,7 @@
   width: 100%;
   height: 6px;
   border-radius: 4px;
-  background: #121a30;
+  background: #e2e8f0;
   overflow: hidden;
   margin-bottom: 6px;
 }
@@ -264,6 +279,7 @@
 .univ-row__bar-fill {
   height: 100%;
   border-radius: 4px;
+  background: linear-gradient(90deg, #d4af37, #b8860b);
   transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -271,5 +287,5 @@
   display: flex;
   justify-content: space-between;
   font-size: 11px;
-  color: #656d92;
+  color: #64748b;
 }

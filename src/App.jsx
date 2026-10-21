@@ -1,5 +1,4 @@
 import { useNavigation } from './hooks/useNavigation';
-import { useAuth } from './hooks/useAuth';
 
 import LandingPage from './pages/LandingPage';
 import SignUpPage from './pages/SignUpPage';
@@ -8,31 +7,31 @@ import SetupPage from './pages/SetupPage';
 import Dashboard from './pages/Dashboard';
 import CodeversePage from './pages/CodeversePage';
 import LearnPage from './pages/LearnPage';
-import QuestPage from './pages/QuestPage';
 import AssessmentPage from './pages/AssessmentPage';
 import RewardsPage from './pages/RewardsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import PortfolioPage from './pages/PortfolioPage'; // nested SPA tabs + form
 
-
+/**
+ * App.jsx — The "Router Outlet"
+ *
+ * This is the SPA router: reads currentPage from NavigationContext
+ * and renders the matching page component.
+ *
+ * Same concept as react-router's <Routes> / <Switch>:
+ *   <Route path="/portfolio" element={<PortfolioPage />} />  ← react-router
+ *   case 'portfolio': return <PortfolioPage />;              ← our custom router
+ */
 export default function App() {
-  const { currentPage, isPublicPage } = useNavigation();
-  const { currentUser } = useAuth();
-
-  
-  if (!currentUser && !isPublicPage) {
-    return <SignInPage />;
-  }
-
-  
-  if (currentUser && !currentUser.onboardingComplete && currentPage !== 'setup' && !isPublicPage) {
-    return <SetupPage />;
-  }
+  const { currentPage } = useNavigation();
 
   switch (currentPage) {
-    case 'landing':
+    case 'dashboard':
     case '':
+      return <Dashboard />;
+    case 'landing':
       return <LandingPage />;
     case 'signin':
       return <SignInPage />;
@@ -40,14 +39,10 @@ export default function App() {
       return <SignUpPage />;
     case 'setup':
       return <SetupPage />;
-    case 'dashboard':
-      return <Dashboard />;
     case 'codeverse':
       return <CodeversePage />;
     case 'learn':
       return <LearnPage />;
-    case 'quests':
-      return <QuestPage />;
     case 'quiz':
       return <AssessmentPage />;
     case 'rewards':
@@ -56,6 +51,8 @@ export default function App() {
       return <ProfilePage />;
     case 'settings':
       return <SettingsPage />;
+    case 'portfolio':
+      return <PortfolioPage />;   // demonstrates nested SPA routing + form handling
     default:
       return <NotFoundPage />;
   }

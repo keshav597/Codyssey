@@ -17,6 +17,7 @@ const DEFAULT_STATE = {
   completedQuizIds: [],
   unlockedBadgeIds: [],
   quizHistory: [],
+  skillScores: {},
   streak: { count: 0, lastActiveDate: null },
   settings: {
     displayName: 'Coder',
@@ -64,15 +65,20 @@ export function StudentProvider({ children }) {
       if (draftStudent.unlockedBadgeIds.includes(badge.id)) continue;
       let met = false;
       const c = badge.condition;
-      if (c.type === 'skillComplete') {
-        const skill = skills.find((s) => s.id === c.skillId);
-        met = calculateSkillProgress(skill, draftStudent.completedLessonIds) === 100;
+      if (c.type === 'skillMastery') {
+        const score = draftStudent.skillScores?.[c.skillId] || 0;
+        met = score >= (c.minXP || 100);
+      } else if (c.type === 'xp') {
+        met = (draftStudent.xp || 0) >= c.xp;
+      } else if (c.type === 'perfectQuiz') {
+        met = draftStudent.quizHistory.some((h) => h.correct === h.total && h.total >= 5);
       } else if (c.type === 'quizzesCompleted') {
         met = draftStudent.quizHistory.length >= c.count;
       } else if (c.type === 'streak') {
         met = draftStudent.streak.count >= c.days;
-      } else if (c.type === 'questsCompleted') {
-        met = draftStudent.completedQuestIds.length >= c.count;
+      } else if (c.type === 'skillComplete') {
+        const skill = skills.find((s) => s.id === c.skillId);
+        met = calculateSkillProgress(skill, draftStudent.completedLessonIds) === 100;
       } else if (c.type === 'level') {
         met = calculateLevel(draftStudent.xp).level >= c.level;
       }
@@ -153,29 +159,34 @@ export function StudentProvider({ children }) {
     });
   }
 
-  function submitQuizResult({ skillId, correct, total, questId }) {
+  function submitQuizResult({ skillId, correct, total = 5, questId }) {
     const quizId = questId || `quiz-${skillId}`;
+    const score = correct * XP_REWARDS.PER_QUESTION; // 20 XP per question
+    const passed = score >= XP_REWARDS.QUIZ_TARGET; // 100 XP required to pass/master
     let awardedXP = 0;
 
     setStudent((prev) => {
-      const alreadyDone =
-        (questId && prev.completedQuestIds.includes(questId)) ||
-        prev.completedQuizIds.includes(quizId) ||
-        prev.quizHistory.some((h) => (h.quizId === quizId || h.questId === questId) && h.xpAwarded > 0);
+      const prevSkillScores = prev.skillScores || {};
+      const previousBest = prevSkillScores[skillId] || 0;
 
-      const earnedXP = alreadyDone ? 0 : calculateQuizXP(correct, total);
-      awardedXP = earnedXP;
+      // Calculate incremental XP on this attempt
+      const gain = Math.max(0, score - previousBest);
+      awardedXP = gain;
 
-      const newXP = addXP(prev.xp, earnedXP);
+      const newSkillXP = Math.max(previousBest, score);
+      const newXP = addXP(prev.xp, gain);
+
       const oldLevel = calculateLevel(prev.xp).level;
       const newLevelObj = calculateLevel(newXP);
-      if (newLevelObj.level > oldLevel && earnedXP > 0) setLastLevelUp(newLevelObj);
+      if (newLevelObj.level > oldLevel && gain > 0) {
+        setLastLevelUp(newLevelObj);
+      }
 
-      const updatedQuests = questId && !prev.completedQuestIds.includes(questId)
+      const updatedQuests = (questId && passed && !prev.completedQuestIds.includes(questId))
         ? [...prev.completedQuestIds, questId]
         : prev.completedQuestIds;
 
-      const updatedQuizzes = !prev.completedQuizIds.includes(quizId)
+      const updatedQuizzes = (passed && !prev.completedQuizIds.includes(quizId))
         ? [...prev.completedQuizIds, quizId]
         : prev.completedQuizIds;
 
@@ -183,6 +194,10 @@ export function StudentProvider({ children }) {
         ...prev,
         completedQuestIds: updatedQuests,
         completedQuizIds: updatedQuizzes,
+        skillScores: {
+          ...prevSkillScores,
+          [skillId]: newSkillXP,
+        },
         xp: newXP,
         quizHistory: [
           ...prev.quizHistory,
@@ -193,7 +208,9 @@ export function StudentProvider({ children }) {
             skillId,
             correct,
             total,
-            xpAwarded: earnedXP,
+            score,
+            xpAwarded: gain,
+            passed,
             date: todayString(),
           },
         ],
@@ -210,7 +227,7 @@ export function StudentProvider({ children }) {
       return updated;
     });
 
-    return awardedXP;
+    return { awardedXP, score, passed };
   }
 
   function updateSettings(partialSettings) {
@@ -225,17 +242,11 @@ export function StudentProvider({ children }) {
     setStudent(DEFAULT_STATE);
   }
 
-  const unlockedSkillIds = [];
-  for (let i = 0; i < skillOrder.length; i++) {
-    const skillId = skillOrder[i];
-    if (i === 0) {
-      unlockedSkillIds.push(skillId);
-      continue;
-    }
-    const prevSkill = skills.find((s) => s.id === skillOrder[i - 1]);
-    const prevProgress = calculateSkillProgress(prevSkill, student.completedLessonIds);
-    if (prevProgress === 100) unlockedSkillIds.push(skillId);
-  }
+  // Skills unlock progressively based on total XP milestones:
+  // HTML: 0 XP, CSS: 100 XP, JavaScript: 200 XP, React: 300 XP
+  const unlockedSkillIds = skills
+    .filter((skill) => (student.xp || 0) >= (skill.requiredXP || 0))
+    .map((skill) => skill.id);
 
   const levelInfo = calculateLevelProgress(student.xp);
 

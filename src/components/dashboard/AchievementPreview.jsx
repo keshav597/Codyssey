@@ -1,28 +1,67 @@
-import Link from '../common/Link';
-import Card from '../common/Card';
-import './dashboard.css';
+import { useNavigation } from '../../hooks/useNavigation';
+import Button from '../common/Button';
+import '../rewards/rewards.css';
 
 export default function AchievementPreview({ badges }) {
-  const unlocked = badges.filter((b) => b.unlocked).slice(-4).reverse();
+  const { navigate } = useNavigation();
+
+  const unlockedCount = badges.filter((b) => b.unlocked).length;
+  const showcaseBadges = badges.slice(0, 4);
 
   return (
-    <Card className="achievement-preview">
-      <div className="today-plan__header">
-        <h3>Recent Achievements</h3>
-        <Link to="/rewards" className="text-secondary" style={{ fontSize: 13 }}>View all</Link>
-      </div>
-      {unlocked.length === 0 ? (
-        <p className="empty-note">Your collection starts here.</p>
-      ) : (
-        <div className="achievement-preview__grid">
-          {unlocked.map((b) => (
-            <div className="achievement-preview__item" key={b.id}>
-              <div className="achievement-preview__icon">{b.icon}</div>
-              <span className="achievement-preview__name">{b.name}</span>
-            </div>
-          ))}
+    <div className="royal-badge-box" style={{ marginTop: 24 }}>
+      <div className="royal-badge-box__header">
+        <div className="royal-badge-box__title-area">
+          <div className="royal-badge-box__icon-frame">🏆</div>
+          <div>
+            <h3 className="royal-badge-box__title" style={{ fontSize: 20 }}>
+              Royal Trophies & Achievements
+            </h3>
+            <p className="royal-badge-box__subtitle">
+              Milestone badges you've unlocked through mastery and streak devotion
+            </p>
+          </div>
         </div>
-      )}
-    </Card>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="royal-badge-box__stat-pill">
+            <span>👑 {unlockedCount} / {badges.length} Unlocked</span>
+          </div>
+          <Button onClick={() => navigate('rewards')} size="sm" variant="secondary">
+            View All Badges →
+          </Button>
+        </div>
+      </div>
+
+      <div className="badge-grid--grand">
+        {showcaseBadges.map((b) => {
+          const rarity = (b.rarity || 'rare').toLowerCase();
+          return (
+            <div
+              key={b.id}
+              className={`badge-card--big ${b.unlocked ? 'badge-card--unlocked' : 'badge-card--locked'}`}
+            >
+              <span className={`badge-card__rarity badge-card__rarity--${rarity}`}>
+                {b.rarity || 'Rare'}
+              </span>
+
+              <div className="badge-card__pedestal">
+                <span>{b.unlocked ? b.icon : '🔒'}</span>
+              </div>
+
+              <h4 className="badge-card__name">{b.name}</h4>
+              <p className="badge-card__desc">{b.description}</p>
+
+              <div className="badge-card__footer">
+                <span className={`badge-card__status ${b.unlocked ? 'badge-card__status--unlocked' : 'badge-card__status--locked'}`}>
+                  {b.unlocked ? '✨ Unlocked' : '🔒 Locked'}
+                </span>
+                <span className="badge-card__xp">+{b.xp || 25} XP</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

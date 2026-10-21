@@ -2,38 +2,43 @@ import {
   LayoutDashboard,
   Rocket,
   BookOpen,
-  Swords,
   Award,
   User,
   Settings,
-  LogOut,
+  ShoppingBag,
+  Briefcase,
 } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
 import { useNavigation } from '../../hooks/useNavigation';
 import './Sidebar.css';
 
+/**
+ * NAV_ITEMS — the list of pages in the sidebar navigation.
+ *
+ * Adding a new page to the app = 3 steps:
+ *   1. Add a case in App.jsx switch
+ *   2. Add an entry here in NAV_ITEMS
+ *   3. Create the page component file
+ *
+ * The Sidebar reads currentPage from NavigationContext (global state)
+ * to highlight the active tab. Each button calls navigate(page) which
+ * updates currentPage → triggers App.jsx to render the new page.
+ */
 const NAV_ITEMS = [
-  { page: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { page: 'codeverse', label: 'Codeverse', icon: Rocket },
-  { page: 'learn', label: 'Learn', icon: BookOpen },
-  { page: 'quests', label: 'Quests', icon: Swords },
-  { page: 'rewards', label: 'Rewards', icon: Award },
-  { page: 'profile', label: 'Profile', icon: User },
+  { page: 'dashboard',  label: 'Dashboard',       icon: LayoutDashboard },
+  { page: 'codeverse',  label: 'Roadmap',          icon: Rocket },
+  { page: 'learn',      label: 'Learn',            icon: BookOpen },
+  { page: 'rewards',    label: 'Badges & Rewards', icon: Award },
+  { page: 'portfolio',  label: 'Portfolio',        icon: Briefcase },     // new
+  { page: 'profile',    label: 'Profile',          icon: User },
 ];
 
 export default function Sidebar() {
-  const { logout } = useAuth();
   const { currentPage, navigate } = useNavigation();
-
-  const handleLogout = () => {
-    logout();
-    navigate('landing');
-  };
 
   return (
     <aside className="sidebar">
       <div className="sidebar-logo" onClick={() => navigate('dashboard')} style={{ cursor: 'pointer' }}>
-        <span className="sidebar-logo-mark">⚡</span>
+        <span className="sidebar-logo-mark">👑</span>
         <span className="sidebar-logo-text">Codyssey</span>
       </div>
 
@@ -62,10 +67,6 @@ export default function Sidebar() {
         >
           <Settings size={19} />
           <span className="sidebar-label">Settings</span>
-        </button>
-        <button type="button" className="sidebar-link sidebar-logout" onClick={handleLogout}>
-          <LogOut size={19} />
-          <span className="sidebar-label">Log Out</span>
         </button>
       </div>
     </aside>
