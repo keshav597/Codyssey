@@ -12,7 +12,8 @@ import RewardsPage from './pages/RewardsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
-import PortfolioPage from './pages/PortfolioPage'; // nested SPA tabs + form
+import ShopPage from './pages/ShopPage';       // new: Zustand cart + async data
+import PortfolioPage from './pages/PortfolioPage'; // new: nested SPA tabs + form
 
 /**
  * App.jsx — The "Router Outlet"
@@ -21,8 +22,8 @@ import PortfolioPage from './pages/PortfolioPage'; // nested SPA tabs + form
  * and renders the matching page component.
  *
  * Same concept as react-router's <Routes> / <Switch>:
- *   <Route path="/portfolio" element={<PortfolioPage />} />  ← react-router
- *   case 'portfolio': return <PortfolioPage />;              ← our custom router
+ *   <Route path="/shop" element={<ShopPage />} />  ← react-router
+ *   case 'shop': return <ShopPage />;              ← our custom router
  */
 export default function App() {
   const { currentPage } = useNavigation();
@@ -51,6 +52,8 @@ export default function App() {
       return <ProfilePage />;
     case 'settings':
       return <SettingsPage />;
+    case 'shop':
+      return <ShopPage />;        // demonstrates Zustand + async loading state
     case 'portfolio':
       return <PortfolioPage />;   // demonstrates nested SPA routing + form handling
     default:

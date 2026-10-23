@@ -12,9 +12,8 @@ import FormInput from '../components/common/FormInput';
 import Button from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
 import { validateSignIn, hasErrors } from '../utils/validation';
+import { fakeAPI } from '../hooks/useAsyncData';
 import './pages.css';
-
-const fakeAPI = (fn, delayMs = 800) => new Promise((resolve) => setTimeout(() => resolve(fn()), delayMs));
 
 export default function SignInPage() {
   const { signIn } = useAuth();

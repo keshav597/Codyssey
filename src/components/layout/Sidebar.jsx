@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { page: 'codeverse',  label: 'Roadmap',          icon: Rocket },
   { page: 'learn',      label: 'Learn',            icon: BookOpen },
   { page: 'rewards',    label: 'Badges & Rewards', icon: Award },
+  { page: 'shop',       label: 'XP Shop',          icon: ShoppingBag },   // new
   { page: 'portfolio',  label: 'Portfolio',        icon: Briefcase },     // new
   { page: 'profile',    label: 'Profile',          icon: User },
 ];

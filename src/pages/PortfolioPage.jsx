@@ -21,8 +21,7 @@ import Button from '../components/common/Button';
 import FormInput from '../components/common/FormInput';
 import { useAuth } from '../hooks/useAuth';
 import { useProgress } from '../hooks/useProgress';
-// Async simulation helper (moved to useAsyncData in next update)
-const fakeAPI = (fn, delayMs = 1000) => new Promise((resolve) => setTimeout(() => resolve(fn()), delayMs));
+import { fakeAPI } from '../hooks/useAsyncData';
 import {
   User, Code2, Layers, Trophy, Mail, Github, Linkedin,
   ExternalLink, CheckCircle, Send, AlertCircle
