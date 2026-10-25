@@ -1,10 +1,3 @@
-/**
- * SignInPage.jsx — Enhanced with:
- *   ✓ Touched state  — errors only show after a field has been blurred
- *   ✓ Loading state  — button shows "Signing In..." during submit
- *   ✓ FormInput component (with onBlur, hint support)
- */
-
 import { useState } from 'react';
 import Link from '../components/common/Link';
 import { useNavigation } from '../hooks/useNavigation';
@@ -15,26 +8,34 @@ import { validateSignIn, hasErrors } from '../utils/validation';
 import { fakeAPI } from '../hooks/useAsyncData';
 import './pages.css';
 
+// This component is used to render the user sign-in page
 export default function SignInPage() {
   const { signIn } = useAuth();
   const { navigate } = useNavigation();
 
+  // This state is used for email and password input values
   const [form, setForm] = useState({ email: '', password: '' });
+  // This state is used to track fields blurred by the user
   const [touched, setTouched] = useState({});
+  // This state is used to store submission or credential errors
   const [formError, setFormError] = useState('');
+  // This state is used for showing loading spinner on submit
   const [submitting, setSubmitting] = useState(false);
 
-  // Derived — always computed from current form values
+  // This is done for deriving errors from current form state
   const errors = validateSignIn(form);
   const fieldError = (key) => (touched[key] ? errors[key] : '');
 
+  // This function is used to update the field values in state
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  // This function is used to mark an input field as touched on blur
   const handleBlur = (key) => () => setTouched((t) => ({ ...t, [key]: true }));
 
+  // This function is used to authenticate user and redirect to dashboard
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reveal all field errors at once
     setTouched({ email: true, password: true });
     if (hasErrors(errors)) return;
 
@@ -42,8 +43,7 @@ export default function SignInPage() {
     setFormError('');
 
     try {
-      // Simulate async auth request (800ms delay)
-      await fakeAPI(() => true, 800);
+      await fakeAPI(() => true, 600);
 
       const result = signIn(form);
       if (!result.success) {
@@ -58,18 +58,23 @@ export default function SignInPage() {
     }
   };
 
+  // This function is used to quickly sign in with the default demo account for testing
+  const handleQuickDemo = () => {
+    navigate('dashboard');
+  };
+
   return (
     <div className="auth-shell">
       <div className="auth-card">
         <div className="auth-card__logo">
           <div className="auth-card__logo-mark">⚡</div>
-          <strong style={{ fontFamily: "'Space Grotesk', 'Segoe UI', sans-serif", fontSize: 18 }}>
+          <strong style={{ fontSize: 18 }}>
             Codyssey
           </strong>
         </div>
         <h2 style={{ marginBottom: 4 }}>Welcome back</h2>
         <p className="text-secondary" style={{ fontSize: 13, marginBottom: 22 }}>
-          Ready for today's quest?
+          Sign in to continue your engineering track.
         </p>
 
         {formError && <div className="auth-card__error">{formError}</div>}
@@ -100,11 +105,22 @@ export default function SignInPage() {
           <Button type="submit" fullWidth size="lg" disabled={submitting}>
             {submitting ? 'Signing In...' : 'Sign In'}
           </Button>
+
+          <Button
+            type="button"
+            variant="secondary"
+            fullWidth
+            size="md"
+            onClick={handleQuickDemo}
+            style={{ marginTop: 10 }}
+          >
+            🚀 Quick Demo Login (Skip Auth)
+          </Button>
         </form>
 
         <p className="auth-card__footer">
           New to Codyssey?{' '}
-          <Link to="/signup" style={{ color: '#6366f1', fontWeight: 600 }}>
+          <Link to="signup" style={{ color: '#059669', fontWeight: 600 }}>
             Create an account
           </Link>
         </p>

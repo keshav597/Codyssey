@@ -12,23 +12,25 @@ export default function AchievementPreview({ badges }) {
     <div className="royal-badge-box" style={{ marginTop: 24 }}>
       <div className="royal-badge-box__header">
         <div className="royal-badge-box__title-area">
-          <div className="royal-badge-box__icon-frame">🏆</div>
+          <div className="royal-badge-box__icon-frame">
+            <span style={{ fontSize: 20 }}>🎓</span>
+          </div>
           <div>
-            <h3 className="royal-badge-box__title" style={{ fontSize: 20 }}>
-              Royal Trophies & Achievements
+            <h3 className="royal-badge-box__title" style={{ fontSize: 18 }}>
+              Engineering Certifications & Milestones
             </h3>
             <p className="royal-badge-box__subtitle">
-              Milestone badges you've unlocked through mastery and streak devotion
+              Verified credentials awarded for curriculum milestones and technical evaluations
             </p>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="royal-badge-box__stat-pill">
-            <span>👑 {unlockedCount} / {badges.length} Unlocked</span>
+            <span>✓ {unlockedCount} / {badges.length} Certified</span>
           </div>
           <Button onClick={() => navigate('rewards')} size="sm" variant="secondary">
-            View All Badges →
+            View All →
           </Button>
         </div>
       </div>
@@ -54,7 +56,7 @@ export default function AchievementPreview({ badges }) {
 
               <div className="badge-card__footer">
                 <span className={`badge-card__status ${b.unlocked ? 'badge-card__status--unlocked' : 'badge-card__status--locked'}`}>
-                  {b.unlocked ? '✨ Unlocked' : '🔒 Locked'}
+                  {b.unlocked ? '✓ Verified' : 'Pending'}
                 </span>
                 <span className="badge-card__xp">+{b.xp || 25} XP</span>
               </div>

@@ -1,12 +1,14 @@
 import PageContainer from '../components/layout/PageContainer';
 import Card from '../components/common/Card';
 import SkillProgress from '../components/skills/SkillProgress';
+import GitHubProfileViewer from '../components/profile/GitHubProfileViewer';
 import { collegeDetails } from '../data/colleges';
 import { useAuth } from '../hooks/useAuth';
 import { useProgress } from '../hooks/useProgress';
 import { BookOpen } from 'lucide-react';
 import './pages.css';
 
+// This component is used to render the student profile, college rank, and GitHub API viewer
 export default function ProfilePage() {
   const { currentUser } = useAuth();
   const { student, levelInfo, skillsWithProgress, badges } = useProgress();
@@ -31,10 +33,10 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div style={{ margin: '14px 0', padding: 12, borderRadius: 10, background: '#0e1426', border: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ margin: '14px 0', padding: '12px 14px', borderRadius: 10, background: '#f8fafc', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 24 }}>{collegeObj?.badge || '🎓'}</span>
             <div>
-              <strong style={{ fontSize: 13, display: 'block' }}>{collegeName}</strong>
+              <strong style={{ fontSize: 13, display: 'block', color: '#0f172a' }}>{collegeName}</strong>
               <span className="text-secondary" style={{ fontSize: 11 }}>
                 Campus Rank: Top 5% · {collegeObj?.location || 'India'}
               </span>
@@ -51,7 +53,7 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <h3 style={{ fontSize: 16 }}>Skills</h3>
             <span className="badge-chip badge-chip--primary" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
-              <BookOpen size={12} /> Phase-I Aligned
+              <BookOpen size={12} /> Curriculum Aligned
             </span>
           </div>
           {skillsWithProgress.map((skill) => (
@@ -60,6 +62,7 @@ export default function ProfilePage() {
         </Card>
       </div>
 
+      {/* Earned badges and certifications */}
       <Card style={{ marginTop: 20 }}>
         <h3 style={{ marginBottom: 14 }}>Achievements & Badges</h3>
         {unlockedBadges.length === 0 ? (
@@ -72,7 +75,9 @@ export default function ProfilePage() {
           </div>
         )}
       </Card>
+
+      {/* GitHub REST API Profile Viewer (Lectures 67–72) */}
+      <GitHubProfileViewer />
     </PageContainer>
   );
 }
-

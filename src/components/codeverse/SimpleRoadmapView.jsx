@@ -1,104 +1,211 @@
+import { useState } from 'react';
 import { useNavigation } from '../../hooks/useNavigation';
-import { ArrowDown, Lock, Play } from 'lucide-react';
-import Card from '../common/Card';
+import { CheckCircle2, Circle, Lock, Play, ChevronDown, ChevronUp, CheckSquare } from 'lucide-react';
 import Button from '../common/Button';
 import ProgressBar from '../common/ProgressBar';
+import { getLessonsForSkill } from '../../data/lessons';
+import './codeverse.css';
 
-export default function SimpleRoadmapView({ skills, completedLessonIds }) {
+export default function SimpleRoadmapView({ skills, completedLessonIds, onSelectLesson }) {
   const { navigate } = useNavigation();
 
+  // Track expanded phases (default all expanded so user sees everything straight to the point)
+  const [expandedPhases, setExpandedPhases] = useState({
+    html: true,
+    css: true,
+    javascript: true,
+    react: true,
+  });
+
+  const toggleExpand = (skillId) => {
+    setExpandedPhases((prev) => ({
+      ...prev,
+      [skillId]: !prev[skillId],
+    }));
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div className="roadmap-timeline">
       {skills.map((skill, index) => {
         const isLocked = skill.status === 'locked';
         const isCompleted = skill.progress === 100;
         const isCurrent = skill.status === 'current';
+        const lessons = getLessonsForSkill(skill.id);
+        const isExpanded = expandedPhases[skill.id];
+
+        const completedCount = lessons.filter((l) => completedLessonIds.includes(l.id)).length;
 
         return (
-          <div key={skill.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Card
-              style={{
-                width: '100%',
-                maxWidth: 720,
-                border: isCurrent ? '2px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: isLocked ? '#0e1426' : '#121a30',
-                opacity: isLocked ? 0.75 : 1,
-                boxShadow: isCurrent ? '0 0 28px rgba(99, 102, 241, 0.4)' : '0 10px 34px rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 14,
-                      background: skill.color ? `${skill.color}22` : '#1b2544',
-                      border: `1px solid ${skill.color || 'rgba(255, 255, 255, 0.08)'}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 22,
-                    }}
-                  >
-                    {skill.icon}
-                  </div>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="eyebrow" style={{ fontSize: 11 }}>STEP {index + 1}</span>
-                      {isCompleted && (
-                        <span className="badge-chip badge-chip--success" style={{ fontSize: 10 }}>COMPLETED</span>
-                      )}
-                      {isCurrent && (
-                        <span className="badge-chip badge-chip--primary" style={{ fontSize: 10 }}>IN PROGRESS</span>
-                      )}
-                      {isLocked && (
-                        <span className="badge-chip badge-chip--secondary" style={{ fontSize: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <Lock size={10} /> LOCKED
-                        </span>
-                      )}
-                    </div>
-                    <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{skill.name}</h3>
-                    <p className="text-secondary" style={{ fontSize: 12 }}>{skill.description}</p>
-                  </div>
-                </div>
-
-                <div style={{ minWidth: 140, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-                  <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: skill.color || '#6366f1' }}>
-                    {skill.progress}% Done
+          <div
+            key={skill.id}
+            className={`roadmap-phase-card ${
+              isCurrent ? 'roadmap-phase-card--current' : isLocked ? 'roadmap-phase-card--locked' : ''
+            }`}
+          >
+            {/* Phase Header */}
+            <div className="phase-header">
+              <div style={{ flex: 1 }}>
+                <div className="phase-meta">
+                  <span className="badge-chip badge-chip--default" style={{ fontSize: 10 }}>
+                    {skill.phase || `PHASE 0${index + 1}`}
                   </span>
-                  <div style={{ width: 120 }}>
-                    <ProgressBar percent={skill.progress} color={skill.color} height={6} />
-                  </div>
+                  {skill.category && (
+                    <span className="badge-chip badge-chip--secondary" style={{ fontSize: 10 }}>
+                      {skill.category}
+                    </span>
+                  )}
+                  {isCompleted && (
+                    <span className="badge-chip badge-chip--success" style={{ fontSize: 10 }}>
+                      ✓ COMPLETED
+                    </span>
+                  )}
+                  {isCurrent && (
+                    <span className="badge-chip badge-chip--primary" style={{ fontSize: 10 }}>
+                      ● ACTIVE TRACK
+                    </span>
+                  )}
+                  {isLocked && (
+                    <span className="badge-chip badge-chip--locked" style={{ fontSize: 10 }}>
+                      <Lock size={10} /> LOCKED ({skill.requiredXP} XP NEEDED)
+                    </span>
+                  )}
                 </div>
+
+                <h3 className="phase-title">
+                  <span style={{ fontSize: 22 }}>{skill.icon}</span>
+                  {skill.name}
+                </h3>
+
+                <p className="phase-desc">{skill.description}</p>
+
+                {skill.competencies && (
+                  <div className="phase-competencies">
+                    {skill.competencies.map((comp, i) => (
+                      <span key={i} className="competency-tag">
+                        {comp}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid rgba(212, 175, 55, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="text-muted" style={{ fontSize: 12 }}>
-                  {isLocked ? `🔒 Unlocks at ${skill.requiredXP} XP (Need 100 XP per skill)` : `${skill.progress}% of topic material completed`}
+              {/* Progress on Right */}
+              <div className="phase-progress-side">
+                <span className="phase-progress-val">
+                  {completedCount} / {lessons.length} Modules
                 </span>
-                <Button
-                  variant={isLocked ? 'ghost' : isCurrent ? 'primary' : 'secondary'}
-                  onClick={() => {
-                    if (isLocked) {
-                      navigate('quiz', { skillId: 'html', questTitle: 'Mastery Quiz', questionCount: 5 });
-                    } else {
-                      navigate('learn', { skillId: skill.id });
-                    }
+                <div style={{ width: 140 }}>
+                  <ProgressBar percent={skill.progress} color="#059669" height={6} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => toggleExpand(skill.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#64748b',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    marginTop: 6,
                   }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: 13 }}
                 >
-                  <Play size={13} /> {isLocked ? `Reach ${skill.requiredXP} XP` : isCompleted ? 'Review Level' : 'Start Level'}
-                </Button>
+                  {isExpanded ? 'Hide Modules' : 'View Modules'}
+                  {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </button>
               </div>
-            </Card>
+            </div>
 
-            {index < skills.length - 1 && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0' }}>
-                <div style={{ width: 2, height: 24, background: isCompleted ? '#2dd4a7' : 'rgba(255, 255, 255, 0.08)' }} />
-                <ArrowDown size={14} color={isCompleted ? '#2dd4a7' : '#656d92'} />
+            {/* Modules List (Expanded) */}
+            {isExpanded && (
+              <div className="phase-body">
+                <div className="phase-section-title">
+                  <span>Curriculum Modules & Practical Exercises</span>
+                  <span style={{ fontSize: 11, color: '#94a3b8' }}>
+                    {isLocked ? 'Locked until previous phase mastered' : 'Interactive exercises with immediate evaluation'}
+                  </span>
+                </div>
+
+                <div className="lessons-list">
+                  {lessons.map((lesson, lIdx) => {
+                    const done = completedLessonIds.includes(lesson.id);
+
+                    return (
+                      <div
+                        key={lesson.id}
+                        className={`lesson-row ${done ? 'lesson-row--completed' : ''}`}
+                      >
+                        <div className="lesson-row__left">
+                          <div
+                            className={`lesson-status-icon ${
+                              done ? 'lesson-status-icon--done' : 'lesson-status-icon--pending'
+                            }`}
+                          >
+                            {done ? <CheckCircle2 size={13} /> : <Circle size={11} />}
+                          </div>
+
+                          <div>
+                            <div className="lesson-title">
+                              <span style={{ color: '#64748b', marginRight: 6, fontSize: 12 }}>
+                                {index + 1}.{lIdx + 1}
+                              </span>
+                              {lesson.title}
+                            </div>
+                            <div className="lesson-tags">
+                              <span className="lesson-meta-text">+{lesson.xp} XP</span>
+                              {lesson.topics?.slice(0, 2).map((t, tIdx) => (
+                                <span key={tIdx} style={{ fontSize: 11, color: '#64748b' }}>
+                                  • {t}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <Button
+                            size="sm"
+                            variant={done ? 'secondary' : isCurrent ? 'primary' : 'secondary'}
+                            disabled={isLocked}
+                            onClick={() => onSelectLesson(lesson)}
+                          >
+                            <Play size={12} /> {done ? 'Review' : 'Start'}
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
+
+            {/* Phase Evaluation / Assessment Footer */}
+            <div className="phase-footer">
+              <div className="phase-assessment-info">
+                <CheckSquare size={16} color="#059669" />
+                <span>
+                  <strong>Technical Evaluation:</strong> {skill.name} Assessment (5 Questions • 20 XP each)
+                </span>
+              </div>
+
+              <Button
+                size="sm"
+                variant={isCurrent ? 'primary' : 'secondary'}
+                disabled={isLocked}
+                onClick={() => {
+                  navigate('quiz', {
+                    skillId: skill.id,
+                    questTitle: `${skill.shortName || skill.name} Technical Assessment`,
+                    questionCount: 5,
+                  });
+                }}
+              >
+                {isLocked ? `Requires ${skill.requiredXP} XP` : 'Take Assessment →'}
+              </Button>
+            </div>
           </div>
         );
       })}

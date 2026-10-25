@@ -27,10 +27,12 @@ const DEFAULT_STATE = {
   onboarding: null,
 };
 
+// This function is used to get the current date as a YYYY-MM-DD string
 function todayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// This function is used to calculate the number of calendar days between two dates
 function daysBetween(a, b) {
   const d1 = new Date(a);
   const d2 = new Date(b);
@@ -46,6 +48,7 @@ export function StudentProvider({ children }) {
   const [lastUnlockedBadge, setLastUnlockedBadge] = useState(null);
   const [lastLevelUp, setLastLevelUp] = useState(null);
 
+  // This function is used to increment or reset the student daily streak
   function bumpStreak(draftStudent) {
     const today = todayString();
     const { lastActiveDate, count = 0 } = draftStudent.streak || {};
@@ -59,6 +62,7 @@ export function StudentProvider({ children }) {
     return { ...draftStudent, streak: { count: newCount, lastActiveDate: today } };
   }
 
+  // This function is used to check if the student unlocked any new achievement badges
   function checkNewBadges(draftStudent) {
     const newlyUnlocked = [];
     for (const badge of badgeData) {
@@ -87,6 +91,7 @@ export function StudentProvider({ children }) {
     return newlyUnlocked;
   }
 
+  // This function is used to mark a lesson as completed and award XP
   function completeLesson(lessonId, xpAmount = XP_REWARDS.LESSON_COMPLETE) {
     setStudent((prev) => {
       const isNew = !prev.completedLessonIds.includes(lessonId);
@@ -130,6 +135,7 @@ export function StudentProvider({ children }) {
     });
   }
 
+  // This function is used to mark an engineering quest or challenge as completed
   function completeQuest(questId) {
     setStudent((prev) => {
       if (prev.completedQuestIds.includes(questId)) return prev;
@@ -159,17 +165,17 @@ export function StudentProvider({ children }) {
     });
   }
 
+  // This function is used to submit quiz answers, calculate score, and record history
   function submitQuizResult({ skillId, correct, total = 5, questId }) {
     const quizId = questId || `quiz-${skillId}`;
-    const score = correct * XP_REWARDS.PER_QUESTION; // 20 XP per question
-    const passed = score >= XP_REWARDS.QUIZ_TARGET; // 100 XP required to pass/master
+    const score = correct * XP_REWARDS.PER_QUESTION;
+    const passed = score >= XP_REWARDS.QUIZ_TARGET;
     let awardedXP = 0;
 
     setStudent((prev) => {
       const prevSkillScores = prev.skillScores || {};
       const previousBest = prevSkillScores[skillId] || 0;
 
-      // Calculate incremental XP on this attempt
       const gain = Math.max(0, score - previousBest);
       awardedXP = gain;
 
@@ -230,20 +236,22 @@ export function StudentProvider({ children }) {
     return { awardedXP, score, passed };
   }
 
+  // This function is used to update student settings
   function updateSettings(partialSettings) {
     setStudent((prev) => ({ ...prev, settings: { ...prev.settings, ...partialSettings } }));
   }
 
+  // This function is used to save onboarding choices
   function setOnboarding(onboardingData) {
     setStudent((prev) => ({ ...prev, onboarding: onboardingData }));
   }
 
+  // This function is used to reset all student progress
   function resetProgress() {
     setStudent(DEFAULT_STATE);
   }
 
-  // Skills unlock progressively based on total XP milestones:
-  // HTML: 0 XP, CSS: 100 XP, JavaScript: 200 XP, React: 300 XP
+  // Skills unlock progressively based on total XP milestones
   const unlockedSkillIds = skills
     .filter((skill) => (student.xp || 0) >= (skill.requiredXP || 0))
     .map((skill) => skill.id);

@@ -1,35 +1,25 @@
-/* Grand Royal Badges Showcase Styles */
+/* Professional Engineering Achievements Showcase Styles */
 
 .royal-badge-box {
   background: #ffffff;
-  border: 1.5px solid rgba(212, 175, 55, 0.32);
-  border-radius: 24px;
-  padding: 32px 28px;
-  box-shadow: 0 10px 36px -6px rgba(184, 134, 11, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 30px 28px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   margin-bottom: 28px;
   position: relative;
   overflow: hidden;
-}
-
-.royal-badge-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: linear-gradient(90deg, #d4af37, #b8860b, #f59e0b, #d4af37);
 }
 
 .royal-badge-box__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 16px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .royal-badge-box__title-area {
@@ -39,84 +29,85 @@
 }
 
 .royal-badge-box__icon-frame {
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #fef9ee, #ffffff);
-  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.12);
 }
 
 .royal-badge-box__title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .royal-badge-box__subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #64748b;
-  margin-top: 2px;
+  margin-top: 3px;
+  max-width: 620px;
+  line-height: 1.5;
 }
 
 .royal-badge-box__stats {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .royal-badge-box__stat-pill {
-  padding: 8px 18px;
+  padding: 6px 14px;
   border-radius: 999px;
-  background: #fefce8;
-  border: 1px solid #fde047;
-  color: #b45309;
-  font-weight: 700;
-  font-size: 13px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 12.5px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
 }
 
 .badge-grid--grand {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 22px;
+  gap: 20px;
 }
 
-/* Big Attractive Badge Card */
+/* Badge Card */
 .badge-card--big {
   background: #ffffff;
-  border: 1.5px solid rgba(212, 175, 55, 0.25);
-  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   position: relative;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  box-shadow: 0 4px 18px rgba(184, 134, 11, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .badge-card--big:hover {
-  transform: translateY(-4px);
-  border-color: rgba(212, 175, 55, 0.6);
-  box-shadow: 0 16px 36px -4px rgba(184, 134, 11, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
 }
 
 .badge-card--unlocked {
-  background: linear-gradient(170deg, #ffffff 0%, #fffdf8 70%, #fef8eb 100%);
-  border-color: rgba(212, 175, 55, 0.45);
+  background: #ffffff;
+  border-color: #cbd5e1;
 }
 
 .badge-card--locked {
-  background: #fbfbfc;
+  background: #fafbfc;
   opacity: 0.72;
   border-color: #e2e8f0;
 }
@@ -127,29 +118,26 @@
 }
 
 .badge-card__pedestal {
-  width: 86px;
-  height: 86px;
-  border-radius: 26px;
-  background: linear-gradient(135deg, #fef9ee, #ffffff);
-  border: 2px solid rgba(212, 175, 55, 0.35);
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 42px;
+  font-size: 34px;
   margin-bottom: 14px;
-  position: relative;
-  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.12);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .badge-card--big:hover .badge-card__pedestal {
-  transform: scale(1.08) rotate(3deg);
+  transform: scale(1.05);
 }
 
 .badge-card--locked .badge-card__pedestal {
   background: #f1f5f9;
-  border-color: #cbd5e1;
-  box-shadow: none;
+  border-color: #e2e8f0;
 }
 
 .badge-card__rarity {
@@ -159,28 +147,26 @@
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 3px 10px;
-  border-radius: 999px;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 6px;
   font-family: 'JetBrains Mono', monospace;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
 }
 
-.badge-card__rarity--legendary { background: #fefce8; color: #b45309; border: 1px solid #fde047; }
-.badge-card__rarity--mythic { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
-.badge-card__rarity--epic { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
-.badge-card__rarity--rare { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
-.badge-card__rarity--common { background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
-
 .badge-card__name {
-  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-  font-size: 17px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 6px;
+  letter-spacing: -0.01em;
 }
 
 .badge-card__desc {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #64748b;
   line-height: 1.5;
   margin-bottom: 16px;
@@ -192,56 +178,31 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 14px;
-  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 12px;
 }
 
 .badge-card__status {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  display: inline-flex;
+  font-weight: 600;
+  display: flex;
   align-items: center;
   gap: 4px;
 }
-.badge-card__status--unlocked { color: #059669; }
-.badge-card__status--locked { color: #94a3b8; }
+
+.badge-card__status--unlocked {
+  color: #059669;
+}
+
+.badge-card__status--locked {
+  color: #94a3b8;
+}
 
 .badge-card__xp {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  font-size: 13px;
-  color: #b45309;
-  background: #fefce8;
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid #fde047;
-}
-
-/* Modals */
-.achievement-modal { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.achievement-modal__label { font-size: 12px; letter-spacing: 0.1em; color: #b45309; text-transform: uppercase; font-weight: 700; }
-.achievement-modal__trophy { font-size: 58px; margin: 10px 0; }
-.achievement-modal__name { font-family: 'Space Grotesk', 'Segoe UI', sans-serif; font-size: 24px; color: #0f172a; }
-.achievement-modal__xp { color: #b45309; font-family: 'JetBrains Mono', 'Courier New', monospace; margin-bottom: 12px; font-weight: 700; }
-
-.level-up { text-align: center; padding: 8px 0; }
-.level-up__content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
-.level-up__ring {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #d4af37, #b8860b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0;
-  box-shadow: 0 6px 24px rgba(184, 134, 11, 0.35);
-}
-.level-up__number {
-  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-  font-size: 44px;
-  font-weight: 700;
-  color: #fff;
+  color: #0f172a;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
 }

@@ -1,19 +1,6 @@
-/**
- * cartStore.js — Zustand store for the XP Shop cart
- *
- * WHY ZUSTAND?
- * Context API re-renders every subscriber when ANY part of the value changes.
- * Zustand only re-renders components that subscribe to the specific slice
- * of state that changed. Great for cart state that many components read.
- *
- * COMPARE with StudentContext (Context API approach):
- *   - Context: wrap with <Provider>, use useContext()
- *   - Zustand: no Provider needed, just import and call useCartStore()
- */
-
 import { create } from 'zustand';
 
-// The products available in the XP Shop
+// Product catalog available in the XP store
 export const SHOP_ITEMS = [
   {
     id: 'boost-xp-2x',
@@ -43,38 +30,38 @@ export const SHOP_ITEMS = [
     inStock: true,
   },
   {
-    id: 'theme-neon',
-    name: 'Neon Coder Theme',
-    desc: 'A vibrant electric-green theme skin for your dashboard.',
+    id: 'theme-zinc',
+    name: 'Minimalist Zinc Theme',
+    desc: 'A clean, high-contrast monochrome layout for high focus.',
     price: 150,
-    emoji: '🟢',
+    emoji: '⚪',
     category: 'Themes',
     inStock: true,
   },
   {
-    id: 'theme-galaxy',
-    name: 'Galaxy Dark Theme',
-    desc: 'Deep space dark theme with nebula purple accents. Exclusive skin.',
+    id: 'theme-slate',
+    name: 'Clean Slate Theme',
+    desc: 'Refined slate palette designed for code review and documentation.',
     price: 200,
-    emoji: '🌌',
+    emoji: '🌑',
     category: 'Themes',
-    inStock: false, // Out of stock — shows disabled state in UI
+    inStock: false,
   },
   {
-    id: 'title-legend',
-    name: '"Legend" Title',
-    desc: 'Displays the exclusive "Legend" title badge next to your name.',
+    id: 'title-senior',
+    name: '"Lead Architect" Title',
+    desc: 'Displays the exclusive "Lead Architect" credential next to your profile.',
     price: 300,
-    emoji: '👑',
+    emoji: '🛠️',
     category: 'Titles',
     inStock: true,
   },
   {
-    id: 'badge-frame-gold',
-    name: 'Gold Badge Frame',
-    desc: 'Adds a shimmering gold border frame around all your earned badges.',
+    id: 'badge-frame-emerald',
+    name: 'Emerald Verified Border',
+    desc: 'Adds a crisp emerald verification border around your earned certifications.',
     price: 120,
-    emoji: '🏆',
+    emoji: '✨',
     category: 'Cosmetics',
     inStock: true,
   },
@@ -92,49 +79,43 @@ export const SHOP_ITEMS = [
 
 export const CATEGORIES = ['All', 'Boosts', 'Power-ups', 'Themes', 'Titles', 'Cosmetics', 'Special'];
 
-/**
- * useCartStore — The Zustand store
- *
- * create() takes a function that receives (set, get):
- *   - set(fn)  → updates state, like setState in React
- *   - get()    → reads current state synchronously (useful inside actions)
- */
+// This custom store is used to manage shopping cart state using Zustand
 export const useCartStore = create((set, get) => ({
-  // ─── State ────────────────────────────────────────────────
-  cartItems: [],        // Array of { ...product, qty: number }
-  isCartOpen: false,    // Controls cart drawer visibility
-  purchasedIds: [],     // Tracks already purchased item IDs
+  cartItems: [],
+  isCartOpen: false,
+  purchasedIds: [],
 
-  // ─── Cart Actions ──────────────────────────────────────────
+  // This function is used to add an item to the shopping cart or increment its quantity
   addToCart: (item) => {
     set((state) => {
       const exists = state.cartItems.find((i) => i.id === item.id);
       if (exists) {
-        // Item already in cart — just bump quantity
         return {
           cartItems: state.cartItems.map((i) =>
             i.id === item.id ? { ...i, qty: i.qty + 1 } : i
           ),
         };
       }
-      // New item — add with qty 1
       return { cartItems: [...state.cartItems, { ...item, qty: 1 }] };
     });
   },
 
+  // This function is used to remove an item from the cart
   removeFromCart: (id) =>
     set((state) => ({ cartItems: state.cartItems.filter((i) => i.id !== id) })),
 
+  // This function is used to decrement an item quantity by 1
   decrementQty: (id) =>
     set((state) => ({
       cartItems: state.cartItems
         .map((i) => (i.id === id ? { ...i, qty: i.qty - 1 } : i))
-        .filter((i) => i.qty > 0), // remove if qty hits 0
+        .filter((i) => i.qty > 0),
     })),
 
+  // This function is used to empty the entire cart
   clearCart: () => set({ cartItems: [] }),
 
-  // ─── Purchase ──────────────────────────────────────────────
+  // This function is used to record purchased items and reset the cart
   markPurchased: (ids) =>
     set((state) => ({
       purchasedIds: [...state.purchasedIds, ...ids],
@@ -142,13 +123,14 @@ export const useCartStore = create((set, get) => ({
       isCartOpen: false,
     })),
 
-  // ─── Cart Drawer ───────────────────────────────────────────
+  // This function is used to toggle the cart slide-out drawer
   toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
   openCart: () => set({ isCartOpen: true }),
   closeCart: () => set({ isCartOpen: false }),
 
-  // ─── Derived (computed from state using get()) ─────────────
-  // Note: these are functions, not reactive — call them like getTotal()
+  // This function is used to calculate the total price of all cart items
   getTotal: () => get().cartItems.reduce((sum, i) => sum + i.price * i.qty, 0),
+
+  // This function is used to get the total quantity of items in the cart
   getItemCount: () => get().cartItems.reduce((sum, i) => sum + i.qty, 0),
 }));

@@ -108,10 +108,10 @@ export default function AssessmentPage() {
     <PageContainer title={questTitle}>
       <div className="quiz-royal-header">
         <div className="quiz-royal-header__badge">
-          <span>👑 Target: 100 XP</span>
+          <span>🎯 Assessment Target: 100 XP</span>
         </div>
         <div className="quiz-royal-header__note">
-          Each question is worth <strong>20 XP</strong> · Reach <strong>100 XP</strong> (5/5) to unlock next skill
+          Each question is worth <strong>20 XP</strong> · Score <strong>100 XP</strong> to certify milestone
         </div>
       </div>
 

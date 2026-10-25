@@ -1,14 +1,3 @@
-/**
- * ShopPage.jsx — XP Shop
- *
- * CONCEPTS DEMONSTRATED:
- * 1. Zustand store (useCartStore) vs Context API (useProgress for XP balance)
- * 2. useAsyncData hook — loading/error/data pattern with fake API delay
- * 3. Local state for UI (activeCategory filter, checkoutStatus)
- * 4. Global state for cart (Zustand) that persists across navigation
- * 5. Derived state — filtering products by category
- */
-
 import { useState } from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import Card from '../components/common/Card';
@@ -19,27 +8,26 @@ import { useAsyncData, fakeAPI } from '../hooks/useAsyncData';
 import { ShoppingCart, X, Plus, Minus, Trash2, Package, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import './ShopPage.css';
 
-// ─── Cart Drawer ───────────────────────────────────────────────────────────────
+// This component is used to render the slide-out shopping cart drawer
 function CartDrawer({ xp }) {
   const { cartItems, isCartOpen, closeCart, removeFromCart, decrementQty, addToCart, getTotal, clearCart, markPurchased } = useCartStore();
-  const [checkoutState, setCheckoutState] = useState('idle'); // idle | loading | success | error
+  const [checkoutState, setCheckoutState] = useState('idle');
   const total = getTotal();
   const canAfford = xp >= total;
 
+  // This function is used to handle cart checkout and deduct XP
   async function handleCheckout() {
     if (!canAfford || cartItems.length === 0) return;
     setCheckoutState('loading');
-    // Simulate API call to "purchase" — shows async loading pattern
-    await fakeAPI(() => true, 1500);
+    await fakeAPI(() => true, 1200);
     const ids = cartItems.map((i) => i.id);
-    markPurchased(ids); // clears cart, adds to purchasedIds in Zustand
+    markPurchased(ids);
     setCheckoutState('success');
     setTimeout(() => setCheckoutState('idle'), 3000);
   }
 
   return (
     <>
-      {/* Backdrop */}
       {isCartOpen && <div className="cart-backdrop" onClick={closeCart} />}
 
       <div className={`cart-drawer ${isCartOpen ? 'cart-drawer--open' : ''}`}>
@@ -122,7 +110,7 @@ function CartDrawer({ xp }) {
   );
 }
 
-// ─── Product Card ──────────────────────────────────────────────────────────────
+// This component is used to render an individual product card
 function ProductCard({ item, onAdd, isPurchased }) {
   const cartItems = useCartStore((state) => state.cartItems);
   const inCart = cartItems.some((i) => i.id === item.id);
@@ -158,32 +146,21 @@ function ProductCard({ item, onAdd, isPurchased }) {
   );
 }
 
-// ─── Main ShopPage ─────────────────────────────────────────────────────────────
+// This component is used to render the XP store page with catalog filters and cart
 export default function ShopPage() {
   const { student } = useProgress();
   const { addToCart, toggleCart, getItemCount, purchasedIds } = useCartStore();
   const itemCount = getItemCount();
 
-  // LOCAL state — only this component needs it
   const [activeCategory, setActiveCategory] = useState('All');
 
-  /**
-   * ASYNC DATA PATTERN — simulates fetching products from an API.
-   * In a real app: replace fakeAPI with fetch('/api/shop/items')
-   *
-   * The hook gives us:
-   *   loading → show skeleton/spinner
-   *   error   → show error message with retry button
-   *   data    → the actual products
-   *   refetch → retry the fetch manually
-   */
+  // This hook is used to simulate async fetching of products with loading state
   const { data: products, loading, error, refetch } = useAsyncData(
-    () => fakeAPI(() => SHOP_ITEMS, 1200), // simulates 1.2s API delay
-    [] // no deps — fetch once on mount
+    () => fakeAPI(() => SHOP_ITEMS, 1000),
+    []
   );
 
-  // DERIVED STATE — computed from products + activeCategory filter
-  // Not stored in state — just calculated on each render
+  // This is done for filtering products by the active category tab
   const filteredProducts = products
     ? activeCategory === 'All'
       ? products
@@ -192,11 +169,10 @@ export default function ShopPage() {
 
   return (
     <PageContainer title="XP Shop">
-      {/* Header */}
       <div className="shop-header">
         <div>
           <p className="text-secondary" style={{ fontSize: 14 }}>
-            Spend your hard-earned XP on power-ups, themes, and exclusive cosmetics.
+            Spend your earned XP on power-ups, themes, and exclusive perks.
           </p>
           <div className="shop-xp-balance">
             <span>⚡</span>
@@ -210,7 +186,7 @@ export default function ShopPage() {
         </button>
       </div>
 
-      {/* Category Filter Tabs — LOCAL state controlling what's visible */}
+      {/* Category filter tabs */}
       <div className="shop-categories">
         {CATEGORIES.map((cat) => (
           <button
@@ -223,7 +199,7 @@ export default function ShopPage() {
         ))}
       </div>
 
-      {/* Async State — Loading Skeleton */}
+      {/* Async loading state */}
       {loading && (
         <div className="shop-loading">
           {[...Array(6)].map((_, i) => (
@@ -237,7 +213,7 @@ export default function ShopPage() {
         </div>
       )}
 
-      {/* Async State — Error with Retry */}
+      {/* Async error state with retry button */}
       {error && !loading && (
         <Card style={{ textAlign: 'center', padding: 40 }}>
           <AlertCircle size={40} color="#ef4444" style={{ marginBottom: 12 }} />
@@ -247,7 +223,7 @@ export default function ShopPage() {
         </Card>
       )}
 
-      {/* Async State — Data (products loaded) */}
+      {/* Product list */}
       {!loading && !error && (
         <>
           {filteredProducts.length === 0 ? (
@@ -269,7 +245,6 @@ export default function ShopPage() {
         </>
       )}
 
-      {/* Cart Drawer — slides in from the right, powered by Zustand */}
       <CartDrawer xp={student.xp} />
     </PageContainer>
   );

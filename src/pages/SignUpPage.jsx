@@ -1,16 +1,3 @@
-/**
- * SignUpPage.jsx — Enhanced with:
- *   ✓ Touched state  — errors only show after a field has been blurred
- *   ✓ Loading state  — button shows "Creating..." during async operation
- *   ✓ Real-time validation after touching (on-blur + on-change combination)
- *   ✓ Uses FormInput component (enhanced reusable input with hint, onBlur)
- *
- * FORM VALIDATION STRATEGY: "Validate on blur, re-validate on change"
- *   1. When user focuses then leaves a field (blur) → mark as touched → show error
- *   2. While typing in a touched field → errors update in real-time
- *   3. On submit → touch all fields → show all remaining errors
- */
-
 import { useState } from 'react';
 import Link from '../components/common/Link';
 import { useNavigation } from '../hooks/useNavigation';
@@ -21,11 +8,12 @@ import { validateSignUp, hasErrors } from '../utils/validation';
 import { fakeAPI } from '../hooks/useAsyncData';
 import './pages.css';
 
+// This component is used to render the student sign up and registration form
 export default function SignUpPage() {
   const { signUp } = useAuth();
   const { navigate } = useNavigation();
 
-  // All field values in one state object
+  // This state is used to hold controlled input values for the form
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -33,43 +21,39 @@ export default function SignUpPage() {
     confirmPassword: '',
   });
 
-  // Tracks which fields the user has visited (blurred at least once)
+  // This state is used to track which input fields the user has focused and blurred
   const [touched, setTouched] = useState({});
-
-  // Form-level error (e.g., email already exists from server/context)
+  // This state is used to store general submission or server error messages
   const [formError, setFormError] = useState('');
-
-  // Submission loading state — prevents double-submit, shows spinner
+  // This state is used to indicate async form submission in progress
   const [submitting, setSubmitting] = useState(false);
 
-  // DERIVED (not stored) — recalculated every render from current `form`
+  // This is done for computing validation errors on each render
   const errors = validateSignUp(form);
 
-  // Only show error for a field if it has been touched by the user
+  // This function is used to return an error message only if the field has been touched
   const fieldError = (key) => (touched[key] ? errors[key] : '');
 
-  // Generic value updater — same pattern as before
+  // This function is used to update form state when a user types into an input field
   const update = (key) => (e) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  // Mark field as touched on blur — triggers error display for that field
+  // This function is used to mark a field as touched when the user blurs away from it
   const handleBlur = (key) => () =>
     setTouched((t) => ({ ...t, [key]: true }));
 
+  // This function is used to handle form submission and validation
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Touch all fields so all errors become visible at once
     setTouched({ name: true, email: true, password: true, confirmPassword: true });
-
-    if (hasErrors(errors)) return; // block submit if validation fails
+    if (hasErrors(errors)) return;
 
     setSubmitting(true);
     setFormError('');
 
     try {
-      // Simulate async sign-up (real app: await fetch('/api/signup', { body: form }))
-      await fakeAPI(() => true, 800);
+      await fakeAPI(() => true, 600);
 
       const result = signUp(form);
       if (!result.success) {
@@ -80,7 +64,7 @@ export default function SignUpPage() {
     } catch {
       setFormError('Something went wrong. Please try again.');
     } finally {
-      setSubmitting(false); // always reset — even on error
+      setSubmitting(false);
     }
   };
 
@@ -89,13 +73,13 @@ export default function SignUpPage() {
       <div className="auth-card">
         <div className="auth-card__logo">
           <div className="auth-card__logo-mark">⚡</div>
-          <strong style={{ fontFamily: "'Space Grotesk', 'Segoe UI', sans-serif", fontSize: 18 }}>
+          <strong style={{ fontSize: 18 }}>
             Codyssey
           </strong>
         </div>
         <h2 style={{ marginBottom: 4 }}>Create your account</h2>
         <p className="text-secondary" style={{ fontSize: 13, marginBottom: 22 }}>
-          Demo, client-side authentication — data is stored in your browser only.
+          Demo client-side authentication — data is saved to browser storage.
         </p>
 
         {formError && <div className="auth-card__error">{formError}</div>}
@@ -106,9 +90,9 @@ export default function SignUpPage() {
             id="name"
             value={form.name}
             onChange={update('name')}
-            onBlur={handleBlur('name')}      /* marks field touched on blur */
+            onBlur={handleBlur('name')}
             placeholder="Aryan Sharma"
-            error={fieldError('name')}        /* only shows if touched */
+            error={fieldError('name')}
             hint={!touched.name ? 'First and last name' : ''}
             required
           />
@@ -149,7 +133,6 @@ export default function SignUpPage() {
             style={{ marginTop: 14, marginBottom: 20 }}
           />
 
-          {/* Disabled + shows loading text during async submit */}
           <Button
             type="submit"
             fullWidth
@@ -162,7 +145,7 @@ export default function SignUpPage() {
 
         <p className="auth-card__footer">
           Already have an account?{' '}
-          <Link to="/signin" style={{ color: '#6366f1', fontWeight: 600 }}>
+          <Link to="signin" style={{ color: '#059669', fontWeight: 600 }}>
             Sign In
           </Link>
         </p>

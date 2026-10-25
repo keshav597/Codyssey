@@ -6,33 +6,33 @@ import { useAuth } from '../hooks/useAuth';
 import './pages.css';
 
 const LOOP = [
-  { step: '01', label: 'Learn',    icon: '📖', color: '#6366f1' },
-  { step: '02', label: 'Practice', icon: '💻', color: '#8b5cf6' },
-  { step: '03', label: 'Quest',    icon: '⚔️',  color: '#c026d3' },
-  { step: '04', label: 'XP',       icon: '⚡', color: '#f59e0b' },
-  { step: '05', label: 'Level Up', icon: '🚀', color: '#22d3ee' },
-  { step: '06', label: 'Unlock',   icon: '🔓', color: '#10b981' },
-  { step: '07', label: 'Badge',    icon: '🏆', color: '#fb923c' },
+  { step: '01', label: 'Curriculum', icon: '📖', color: '#059669' },
+  { step: '02', label: 'Practice',   icon: '💻', color: '#0f766e' },
+  { step: '03', label: 'Assess',     icon: '🎯', color: '#475569' },
+  { step: '04', label: 'Verify',     icon: '⚡', color: '#059669' },
+  { step: '05', label: 'Milestone',  icon: '📈', color: '#0f172a' },
+  { step: '06', label: 'Unlock',     icon: '🔓', color: '#10b981' },
+  { step: '07', label: 'Certified',  icon: '🎓', color: '#7c3aed' },
 ];
 
 const FEATURES = [
-  { icon: '🚀', title: 'Codeverse', body: 'A living galaxy that visualizes what you\'ve unlocked — HTML, CSS, JavaScript, React — one node at a time.' },
-  { icon: '⚔️', title: 'Quests', body: 'Daily, learning, quiz, and challenge quests turn each concept into a short, rewarding mission.' },
-  { icon: '🔥', title: 'XP, Levels & Streaks', body: 'Every lesson and quiz earns XP, levels you up, and keeps your streak alive.' },
+  { icon: '🗺️', title: 'Visual Engineering Roadmap', body: 'A structured, phased milestone path from web foundations to modern React component architecture.' },
+  { icon: '💻', title: 'Hands-on Interactive Modules', body: 'Bite-sized technical lessons with immediate feedback and code validation.' },
+  { icon: '🎯', title: 'Verifiable Assessments', body: 'Rigorous technical evaluations per phase to evaluate your readiness and certify competency.' },
 ];
 
 const STATS = [
-  { value: '4', label: 'Skill Worlds' },
-  { value: '24', label: 'Micro Lessons' },
-  { value: '14', label: 'Quests' },
-  { value: '10', label: 'Badges' },
+  { value: '4', label: 'Engineering Phases' },
+  { value: '24', label: 'Interactive Modules' },
+  { value: '100%', label: 'Hands-on Practice' },
+  { value: '9', label: 'Certifications' },
 ];
 
 const PREVIEW_NODES = [
-  { icon: '🚀', name: 'React', state: 'locked' },
-  { icon: '⚡', name: 'JavaScript', state: 'current' },
-  { icon: '🌙', name: 'CSS', state: 'completed' },
-  { icon: '🌍', name: 'HTML', state: 'completed' },
+  { icon: '⚛️', name: 'React Architecture', state: 'locked' },
+  { icon: '⚡', name: 'JavaScript Logic', state: 'current' },
+  { icon: '🎨', name: 'CSS Modern Layouts', state: 'completed' },
+  { icon: '🌐', name: 'HTML5 Semantics', state: 'completed' },
 ];
 
 const UNIVERSITIES = [
@@ -46,8 +46,8 @@ const UNIVERSITIES = [
 ];
 
 const PLATFORM_STATS = [
-  { value: '15,000+', label: 'Lessons Completed', variant: 'purple' },
-  { value: '45,000+', label: 'Quizzes Solved', variant: 'default' },
+  { value: '15,000+', label: 'Modules Mastered', variant: 'purple' },
+  { value: '45,000+', label: 'Assessments Solved', variant: 'default' },
   { value: '500+', label: 'Colleges Represented', variant: 'default' },
   { value: '98%', label: 'Student Retention', variant: 'teal' },
 ];
@@ -55,16 +55,16 @@ const PLATFORM_STATS = [
 const OTHER_PLATFORMS_LIMITS = [
   'Passive video lectures with no active hands-on coding practice',
   'No instant mistake feedback or interactive explanations',
-  'Monotonous text without gamification, streaks, or levels',
-  'Confusing syllabus without clear step-by-step visual progression',
-  'No campus leaderboards to compete with college classmates',
+  'Monotonous text without structured milestone progression',
+  'Confusing syllabus without clear step-by-step visual roadmap',
+  'No campus leaderboards to collaborate with classmates',
   'Generic certificates instead of verifiable skill achievement badges',
 ];
 
 const COODYSSEY_ADVANTAGES = [
   'Interactive bite-sized coding lessons with instant feedback',
-  'Duolingo-style quizzes with XP rewards, levels, and daily streaks',
-  'Living Codeverse galaxy that lights up as you master skills',
+  'Technical evaluations with XP rewards and daily consistency streaks',
+  'Clear engineering roadmap that highlights exactly what to learn next',
   'University leaderboards to represent your college and compete',
   'Personalized learning paths tailored to your engineering goals',
 ];
@@ -74,9 +74,6 @@ export default function LandingPage() {
 
   return (
     <div className="landing">
-      <div className="landing-orb landing-orb--1" aria-hidden="true" />
-      <div className="landing-orb landing-orb--2" aria-hidden="true" />
-
       <div className="container">
         <nav className="landing-nav glass">
           <div className="landing-nav__logo">
@@ -84,26 +81,26 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link to="dashboard">
-              <Button size="md" variant="primary">👑 Open Dashboard</Button>
+              <Button size="md" variant="primary">Open Dashboard</Button>
             </Link>
           </div>
         </nav>
 
         <section className="landing-hero">
-          <p className="eyebrow landing-hero__eyebrow">Learn. Master. Build. Level Up.</p>
+          <p className="eyebrow landing-hero__eyebrow">Curriculum • Practice • Evaluation</p>
           <h1>
-            Turn learning to code into <span className="gradient-text">a royal quest you love to conquer.</span>
+            Master modern software engineering with <span className="gradient-text">a structured visual roadmap.</span>
           </h1>
           <p>
-            Codyssey is a gamified programming academy. Earn 20 XP per question, hit 100 XP to master skills,
-            and watch your Codeverse unlock progressively as you master HTML, CSS, JavaScript, and React.
+            Codyssey is a professional learning platform for developers. Complete hands-on modules, test your skills through verified evaluations,
+            and follow a structured milestone track from HTML5 and CSS3 to advanced JavaScript and React.
           </p>
           <div className="landing-hero__ctas">
             <Link to="dashboard">
-              <Button size="lg" variant="primary">ENTER THE ACADEMY 👑</Button>
+              <Button size="lg" variant="primary">Start Engineering Track</Button>
             </Link>
-            <Link to="learn">
-              <Button size="lg" variant="secondary">Explore Curriculum</Button>
+            <Link to="codeverse">
+              <Button size="lg" variant="secondary">View Roadmap</Button>
             </Link>
           </div>
         </section>
@@ -199,11 +196,11 @@ export default function LandingPage() {
 
         <section className="landing-showcase">
           <div>
-            <p className="eyebrow" style={{ marginBottom: 10 }}>The Codeverse</p>
-            <h2 style={{ fontSize: 28, marginBottom: 12 }}>Your progress, visualized as a galaxy.</h2>
+            <p className="eyebrow" style={{ marginBottom: 10 }}>Curriculum Roadmap</p>
+            <h2 style={{ fontSize: 28, marginBottom: 12 }}>Your engineering progress, visualized clearly.</h2>
             <p className="text-secondary" style={{ maxWidth: 420, lineHeight: 1.7 }}>
-              Every skill you learn lights up a node in your Codeverse. Finish HTML, and CSS unlocks.
-              Finish CSS, and JavaScript comes online. It's not a roadmap you read — it's a universe you build.
+              Every skill you complete unlocks the next technical milestone in your track. Finish HTML5, and CSS3 unlocks.
+              Finish CSS3, and JavaScript comes online. It's a structured milestone track designed for college evaluations.
             </p>
           </div>
           <div className="landing-preview glass">

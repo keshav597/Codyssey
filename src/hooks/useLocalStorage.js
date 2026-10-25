@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 
+// This custom hook is used to sync React state with the browser localStorage
 export function useLocalStorage(key, initialValue) {
   const [storedKey, setStoredKey] = useState(key);
+
+  // This function is used to read and parse the stored JSON value from localStorage
   const [value, setValue] = useState(() => {
     try {
       const stored = window.localStorage.getItem(key);
@@ -24,6 +27,7 @@ export function useLocalStorage(key, initialValue) {
     setValue(nextVal);
   }
 
+  // This effect is used to serialize and write updated state to localStorage as JSON
   useEffect(() => {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
@@ -32,6 +36,7 @@ export function useLocalStorage(key, initialValue) {
     }
   }, [key, value]);
 
+  // This function is used to remove the key from localStorage and reset to initial value
   const remove = useCallback(() => {
     try {
       window.localStorage.removeItem(key);

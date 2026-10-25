@@ -27,21 +27,20 @@ export default function QuickQuizCard({ student, unlockedSkillIds }) {
     <Card className="today-plan">
       <div className="today-plan__header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 20 }}>👑</span>
-          <h3 style={{ fontSize: 18 }}>Active Mastery Goal</h3>
+          <h3 style={{ fontSize: 17, fontWeight: 700 }}>Next Technical Assessment</h3>
         </div>
         <span className="badge-chip badge-chip--xp">20 XP / Question</span>
       </div>
 
       <div className="quest-row" style={{ marginTop: 8 }}>
         <div className="quest-row__info">
-          <span className="quest-row__title" style={{ fontSize: 16 }}>
-            {nextTargetSkill.icon} {nextTargetSkill.name} Mastery Quiz
+          <span className="quest-row__title" style={{ fontSize: 15, fontWeight: 600 }}>
+            {nextTargetSkill.icon} {nextTargetSkill.name} Assessment
           </span>
           <span className="quest-row__meta mono">
             {isMastered
-              ? '👑 100 / 100 XP (Mastered)'
-              : `Current best: ${currentScore} / 100 XP · 5 questions`}
+              ? '✓ 100 / 100 XP (Mastered)'
+              : `Current score: ${currentScore} / 100 XP · 5 questions`}
           </span>
         </div>
 
@@ -50,7 +49,7 @@ export default function QuickQuizCard({ student, unlockedSkillIds }) {
           variant="primary"
           onClick={() => handleStartQuiz(nextTargetSkill.id)}
         >
-          {isMastered ? '🔄 Reattempt' : 'Start Quiz →'}
+          {isMastered ? 'Retake Assessment' : 'Start Assessment →'}
         </Button>
       </div>
 

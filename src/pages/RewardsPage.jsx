@@ -6,8 +6,9 @@ export default function RewardsPage() {
   const { badges } = useProgress();
 
   return (
-    <PageContainer title="Royal Trophy Vault">
+    <PageContainer title="Certifications & Achievements">
       <BadgeGrid badges={badges} />
     </PageContainer>
   );
 }
+

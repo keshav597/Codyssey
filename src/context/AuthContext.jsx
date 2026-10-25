@@ -3,18 +3,22 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const AuthContext = createContext(null);
 
+// Default student profile for easy demonstration during evaluation
 const DEFAULT_USER = {
-  id: 'user-royal',
-  name: 'Royal Scholar',
-  email: 'scholar@royal.academy',
+  id: 'user-student-1',
+  name: 'Aryan Sharma',
+  email: 'aryan.sharma@chitkara.edu.in',
   onboardingComplete: true,
   createdAt: new Date().toISOString(),
 };
 
 export function AuthProvider({ children }) {
+  // This state is used to store registered users in localStorage
   const [users, setUsers] = useLocalStorage('codyssey_users', [DEFAULT_USER]);
+  // This state is used to track the currently logged in session
   const [session, setSession] = useLocalStorage('codyssey_session', { userId: DEFAULT_USER.id });
 
+  // This function is used to register a new user and store credentials in localStorage
   function signUp({ name, email, password }) {
     const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
     if (exists) {
@@ -22,8 +26,8 @@ export function AuthProvider({ children }) {
     }
     const newUser = {
       id: `user-${Date.now()}`,
-      name: name || 'Royal Scholar',
-      email: email || 'scholar@royal.academy',
+      name: name || 'Student Developer',
+      email: email || 'student@university.edu',
       password: password || '',
       onboardingComplete: true,
       createdAt: new Date().toISOString(),
@@ -33,6 +37,7 @@ export function AuthProvider({ children }) {
     return { success: true, user: newUser };
   }
 
+  // This function is used to authenticate a user by checking email and password
   function signIn({ email, password }) {
     const user = users.find(
       (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
@@ -44,17 +49,19 @@ export function AuthProvider({ children }) {
     return { success: true, user };
   }
 
+  // This function is used to sign out the user and reset to default demo account
   function logout() {
-    // Keeps active guest/scholar state instead of locking user out
     setSession({ userId: DEFAULT_USER.id });
   }
 
+  // This function is used to update the profile information of the current student
   function updateProfile(updatedData) {
     setUsers((prev) =>
       prev.map((u) => (u.id === (session?.userId || DEFAULT_USER.id) ? { ...u, ...updatedData } : u))
     );
   }
 
+  // This function is used to save onboarding setup answers
   function completeOnboarding(profileData) {
     setUsers((prev) =>
       prev.map((u) =>

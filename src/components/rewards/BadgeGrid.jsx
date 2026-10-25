@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Award, CheckCircle, ShieldCheck } from 'lucide-react';
 import './rewards.css';
 
 export default function BadgeGrid({ badges }) {
@@ -17,26 +18,29 @@ export default function BadgeGrid({ badges }) {
     <div className="royal-badge-box">
       <div className="royal-badge-box__header">
         <div className="royal-badge-box__title-area">
-          <div className="royal-badge-box__icon-frame">👑</div>
+          <div className="royal-badge-box__icon-frame">
+            <Award size={26} color="#0f172a" />
+          </div>
           <div>
-            <h2 className="royal-badge-box__title">Royal Trophy & Badge Vault</h2>
+            <h2 className="royal-badge-box__title">Engineering Achievements & Certifications</h2>
             <p className="royal-badge-box__subtitle">
-              Prestige milestones unlocked through skill mastery and quiz excellence
+              Verified technical milestones awarded upon curriculum mastery, assessment accuracy, and consistency.
             </p>
           </div>
         </div>
 
         <div className="royal-badge-box__stats">
           <div className="royal-badge-box__stat-pill">
-            <span>🏆 {unlockedCount} / {badges.length} Unlocked</span>
+            <CheckCircle size={14} color="#059669" />
+            <span>{unlockedCount} / {badges.length} Certified</span>
           </div>
           <div className="royal-badge-box__stat-pill" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#15803d' }}>
-            <span>⚡ +{totalXP} Badge XP</span>
+            <span>+{totalXP} Milestone XP</span>
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {['all', 'unlocked', 'locked'].map((f) => (
           <button
             key={f}
@@ -44,21 +48,21 @@ export default function BadgeGrid({ badges }) {
             className={`skill-filter__btn ${filter === f ? 'skill-filter__btn--active' : ''}`}
             onClick={() => setFilter(f)}
           >
-            {f === 'all' ? `All Badges (${badges.length})` : f === 'unlocked' ? `Unlocked (${unlockedCount})` : `Locked (${badges.length - unlockedCount})`}
+            {f === 'all' ? `All Achievements (${badges.length})` : f === 'unlocked' ? `Unlocked (${unlockedCount})` : `Pending (${badges.length - unlockedCount})`}
           </button>
         ))}
       </div>
 
       <div className="badge-grid--grand">
         {filtered.map((b) => {
-          const rarity = (b.rarity || 'rare').toLowerCase();
+          const rarity = (b.rarity || 'specialist').toLowerCase();
           return (
             <div
               key={b.id}
               className={`badge-card--big ${b.unlocked ? 'badge-card--unlocked' : 'badge-card--locked'}`}
             >
               <span className={`badge-card__rarity badge-card__rarity--${rarity}`}>
-                {b.rarity || 'Rare'}
+                {b.rarity || 'Certified'}
               </span>
 
               <div className="badge-card__pedestal">
@@ -70,7 +74,7 @@ export default function BadgeGrid({ badges }) {
 
               <div className="badge-card__footer">
                 <span className={`badge-card__status ${b.unlocked ? 'badge-card__status--unlocked' : 'badge-card__status--locked'}`}>
-                  {b.unlocked ? '✨ Unlocked' : '🔒 Locked'}
+                  {b.unlocked ? '✓ Verified' : 'Pending Goal'}
                 </span>
                 <span className="badge-card__xp">+{b.xp || 25} XP</span>
               </div>

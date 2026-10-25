@@ -19,24 +19,24 @@ export default function QuizResult({
 
   return (
     <div className="quiz-result">
-      <div className="quiz-result__crown-icon">{passed ? '👑' : '⚔️'}</div>
-      <h2>{passed ? '100 XP ACHIEVED · SKILL MASTERED!' : 'ATTEMPT FAILED · 100 XP REQUIRED'}</h2>
+      <div className="quiz-result__crown-icon">{passed ? '🎯' : '📝'}</div>
+      <h2>{passed ? 'TECHNICAL ASSESSMENT PASSED' : 'EVALUATION INCOMPLETE · 100 XP REQUIRED'}</h2>
 
       <div className="quiz-result__score mono">
         {score} <span style={{ fontSize: 24, opacity: 0.6 }}>/ 100 XP</span>
       </div>
 
-      <p className="text-secondary" style={{ fontSize: 15, fontWeight: 500 }}>
+      <p className="text-secondary" style={{ fontSize: 14.5, fontWeight: 500 }}>
         {correct} of {total} questions correct (20 XP per question)
       </p>
 
       {passed ? (
         <div className="quiz-banner quiz-banner--success">
           <p>
-            🎉 <strong>Royal Mastery Unlocked!</strong> You achieved the full 100 XP!
+            ✓ <strong>Milestone Verified:</strong> You earned full score on this evaluation!
             {nextSkill && (
               <span>
-                {' '}<strong>{nextSkill.name}</strong> ({nextSkill.icon}) is now unlocked!
+                {' '}<strong>{nextSkill.name}</strong> is now unlocked in your roadmap.
               </span>
             )}
           </p>

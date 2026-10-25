@@ -1,8 +1,8 @@
 .badge-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
+  gap: 5px;
+  padding: 3px 10px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
@@ -11,10 +11,11 @@
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 .badge-chip--default { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-.badge-chip--primary { background: #fdfaf3; color: #b45309; border: 1px solid rgba(212, 175, 55, 0.3); }
-.badge-chip--secondary { background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
-.badge-chip--success { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-.badge-chip--xp { background: #fefce8; color: #b45309; border: 1px solid #fde047; box-shadow: 0 2px 6px rgba(234, 179, 8, 0.15); }
-.badge-chip--streak { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
-.badge-chip--locked { background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; }
-.badge-chip--danger { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+.badge-chip--primary { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
+.badge-chip--secondary { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+.badge-chip--success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.badge-chip--xp { background: #f0fdf4; color: #065f46; border: 1px solid #bbf7d0; }
+.badge-chip--streak { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.badge-chip--locked { background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0; }
+.badge-chip--danger { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+
