@@ -94,3 +94,6 @@
   border-top: 1px solid #e2e8f0;
 }
 
+
+.sidebar-link--logout { color: #e11d48; }
+.sidebar-link--logout:hover { background: #fff1f2; color: #be123c; }

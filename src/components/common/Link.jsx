@@ -1,25 +1,11 @@
-import { useNavigation } from '../../hooks/useNavigation';
+import { Link as RouterLink } from 'react-router-dom';
 
-export default function Link({ to, children, className = '', style = {}, onClick, ...rest }) {
-  const { navigate } = useNavigation();
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (onClick) onClick(e);
-    navigate(to);
-  };
-
-  const cleanTo = String(to).startsWith('/') ? to.slice(1) : String(to);
-
+// Reusable link: to="signup" -> goes to /signup (no page reload)
+export default function Link({ to, children, style = {}, ...rest }) {
+  const path = to === 'landing' ? '/' : `/${String(to).replace(/^\//, '')}`;
   return (
-    <a
-      href={`#${cleanTo}`}
-      onClick={handleClick}
-      className={className}
-      style={{ textDecoration: 'none', cursor: 'pointer', ...style }}
-      {...rest}
-    >
+    <RouterLink to={path} style={{ textDecoration: 'none', ...style }} {...rest}>
       {children}
-    </a>
+    </RouterLink>
   );
 }

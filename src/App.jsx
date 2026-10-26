@@ -1,4 +1,5 @@
-import { useNavigation } from './hooks/useNavigation';
+import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 import LandingPage from './pages/LandingPage';
 import SignUpPage from './pages/SignUpPage';
@@ -10,40 +11,33 @@ import AssessmentPage from './pages/AssessmentPage';
 import RewardsPage from './pages/RewardsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
-import NotFoundPage from './pages/NotFoundPage';
 import ShopPage from './pages/ShopPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-// This component is used as the root SPA router to render pages based on active route
+// Root of the SPA: public pages first, then protected pages (login required), then 404
 export default function App() {
-  const { currentPage } = useNavigation();
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
 
-  switch (currentPage) {
-    case 'dashboard':
-    case '':
-      return <Dashboard />;
-    case 'landing':
-      return <LandingPage />;
-    case 'signin':
-      return <SignInPage />;
-    case 'signup':
-      return <SignUpPage />;
-    case 'setup':
-      return <SetupPage />;
-    case 'codeverse':
-    case 'roadmap':
-    case 'learn':
-      return <CodeversePage />;
-    case 'quiz':
-      return <AssessmentPage />;
-    case 'rewards':
-      return <RewardsPage />;
-    case 'profile':
-      return <ProfilePage />;
-    case 'settings':
-      return <SettingsPage />;
-    case 'shop':
-      return <ShopPage />;
-    default:
-      return <NotFoundPage />;
-  }
+      {/* Protected routes (nested inside ProtectedRoute) */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/setup" element={<SetupPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/codeverse" element={<CodeversePage />} />
+        <Route path="/quiz" element={<AssessmentPage />} />
+        <Route path="/quiz/:skillId" element={<AssessmentPage />} /> {/* dynamic route */}
+        <Route path="/rewards" element={<RewardsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/shop" element={<ShopPage />} />
+      </Route>
+
+      {/* 404 */}
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  );
 }

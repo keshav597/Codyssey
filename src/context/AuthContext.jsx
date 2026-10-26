@@ -3,20 +3,11 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const AuthContext = createContext(null);
 
-// Default student profile for easy demonstration during evaluation
-const DEFAULT_USER = {
-  id: 'user-student-1',
-  name: 'Aryan Sharma',
-  email: 'aryan.sharma@chitkara.edu.in',
-  onboardingComplete: true,
-  createdAt: new Date().toISOString(),
-};
-
 export function AuthProvider({ children }) {
   // This state is used to store registered users in localStorage
-  const [users, setUsers] = useLocalStorage('codyssey_users', [DEFAULT_USER]);
+  const [users, setUsers] = useLocalStorage('codyssey_users', []);
   // This state is used to track the currently logged in session
-  const [session, setSession] = useLocalStorage('codyssey_session', { userId: DEFAULT_USER.id });
+  const [session, setSession] = useLocalStorage('codyssey_session', null);
 
   // This function is used to register a new user and store credentials in localStorage
   function signUp({ name, email, password }) {
@@ -49,15 +40,15 @@ export function AuthProvider({ children }) {
     return { success: true, user };
   }
 
-  // This function is used to sign out the user and reset to default demo account
+  // This function is used to sign out the user (clears the session)
   function logout() {
-    setSession({ userId: DEFAULT_USER.id });
+    setSession(null);
   }
 
   // This function is used to update the profile information of the current student
   function updateProfile(updatedData) {
     setUsers((prev) =>
-      prev.map((u) => (u.id === (session?.userId || DEFAULT_USER.id) ? { ...u, ...updatedData } : u))
+      prev.map((u) => (u.id === session?.userId ? { ...u, ...updatedData } : u))
     );
   }
 
@@ -72,12 +63,12 @@ export function AuthProvider({ children }) {
     );
   }
 
-  const currentUser =
-    (session ? users.find((u) => u.id === session.userId) : null) || users[0] || DEFAULT_USER;
+  // Logged in only if a session exists and the user is found
+  const currentUser = session ? users.find((u) => u.id === session.userId) || null : null;
 
   const value = {
     currentUser,
-    isAuthenticated: true,
+    isAuthenticated: !!currentUser,
     signUp,
     signIn,
     logout,

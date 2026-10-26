@@ -7,9 +7,11 @@ import {
   Settings,
   ShoppingBag,
   Code2,
+  LogOut,
 } from 'lucide-react';
 import { useNavigation } from '../../hooks/useNavigation';
 import { useProgress } from '../../hooks/useProgress';
+import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
@@ -25,6 +27,13 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const { currentPage, navigate } = useNavigation();
   const { student } = useProgress();
+  const { currentUser, logout } = useAuth();
+
+  // Log out, then go back to the landing page
+  function handleLogout() {
+    logout();
+    navigate('landing');
+  }
 
   return (
     <aside className="sidebar">
@@ -82,6 +91,10 @@ export default function Sidebar() {
         >
           <Settings size={18} />
           <span className="sidebar-label">Settings</span>
+        </button>
+        <button type="button" onClick={handleLogout} className="sidebar-link sidebar-link--logout">
+          <LogOut size={18} />
+          <span className="sidebar-label">Log out{currentUser ? ` (${currentUser.name.split(' ')[0]})` : ''}</span>
         </button>
       </div>
     </aside>

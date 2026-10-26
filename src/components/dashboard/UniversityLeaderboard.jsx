@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import Card from '../common/Card';
 import { collegeDetails } from '../../data/colleges';
+import { useAsyncData, fakeAPI } from '../../hooks/useAsyncData';
 import { Building2, Trophy, Users, Zap } from 'lucide-react';
 import './dashboard.css';
 
 export default function UniversityLeaderboard({ userCollege }) {
   const [selectedUniv, setSelectedUniv] = useState(null);
 
-  const sortedColleges = [...collegeDetails].sort((a, b) => b.totalXP - a.totalXP);
+  // Async state: data arrives after a short fake delay (shows loading + error handling)
+  const { data, loading, error, refetch } = useAsyncData(
+    () => fakeAPI(() => [...collegeDetails].sort((a, b) => b.totalXP - a.totalXP), 900),
+    []
+  );
+  const sortedColleges = data || [];
   const topXP = sortedColleges[0]?.totalXP || 1;
 
   return (
@@ -29,6 +35,13 @@ export default function UniversityLeaderboard({ userCollege }) {
           {userCollege ? userCollege.split(' ')[0] : 'All Universities'}
         </span>
       </div>
+
+      {loading && <div className="dash-loading">Loading leaderboard...</div>}
+      {error && (
+        <div className="dash-error">
+          {error} <button type="button" onClick={refetch}>Retry</button>
+        </div>
+      )}
 
       <div className="univ-card__list">
         {sortedColleges.map((univ, index) => {
