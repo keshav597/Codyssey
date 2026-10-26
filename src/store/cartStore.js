@@ -74,6 +74,42 @@ export const SHOP_ITEMS = [
     category: 'Titles',
     inStock: true,
   },
+  {
+    id: 'boost-overdrive-3x',
+    name: 'Overdrive XP Surge',
+    desc: 'Triples your earned XP on the next completed coding project.',
+    price: 125,
+    emoji: '🚀',
+    category: 'Boosts',
+    inStock: true,
+  },
+  {
+    id: 'second-chance-token',
+    name: 'Second Chance Token',
+    desc: 'Grants an instant free retry on any missed assessment question.',
+    price: 55,
+    emoji: '🔄',
+    category: 'Power-ups',
+    inStock: true,
+  },
+  {
+    id: 'code-review-pro',
+    name: 'AI Code Review Pass',
+    desc: 'Unlocks comprehensive architectural feedback on your challenge solutions.',
+    price: 95,
+    emoji: '🤖',
+    category: 'Special',
+    inStock: true,
+  },
+  {
+    id: 'avatar-neon-aura',
+    name: 'Neon Cyber Aura',
+    desc: 'Unlocks a luminous animated aura around your profile avatar.',
+    price: 140,
+    emoji: '💫',
+    category: 'Cosmetics',
+    inStock: true,
+  },
 ];
 
 export const CATEGORIES = ['All', 'Boosts', 'Power-ups', 'Themes', 'Titles', 'Cosmetics', 'Special'];
