@@ -2,14 +2,15 @@ import { useState } from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
+import { useNavigation } from '../hooks/useNavigation';
 import { useCartStore, SHOP_ITEMS, CATEGORIES } from '../store/cartStore';
 import { useProgress } from '../hooks/useProgress';
 import { useAsyncData, fakeAPI } from '../hooks/useAsyncData';
-import { ShoppingCart, X, Plus, Minus, Trash2, Package, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus, Trash2, Package, CheckCircle, AlertCircle, Loader, Lock, ArrowRight } from 'lucide-react';
 import './ShopPage.css';
 
 // This component is used to render the slide-out shopping cart drawer
-function CartDrawer({ xp }) {
+function CartDrawer({ xp, spendXP }) {
   const { cartItems, isCartOpen, closeCart, removeFromCart, decrementQty, addToCart, getTotal, clearCart, markPurchased } = useCartStore();
   const [checkoutState, setCheckoutState] = useState('idle');
   const total = getTotal();
@@ -19,11 +20,17 @@ function CartDrawer({ xp }) {
   async function handleCheckout() {
     if (!canAfford || cartItems.length === 0) return;
     setCheckoutState('loading');
-    await fakeAPI(() => true, 1200);
-    const ids = cartItems.map((i) => i.id);
-    markPurchased(ids);
-    setCheckoutState('success');
-    setTimeout(() => setCheckoutState('idle'), 3000);
+    await fakeAPI(() => true, 900);
+
+    const success = spendXP(total);
+    if (success) {
+      const ids = cartItems.map((i) => i.id);
+      markPurchased(ids);
+      setCheckoutState('success');
+      setTimeout(() => setCheckoutState('idle'), 3000);
+    } else {
+      setCheckoutState('idle');
+    }
   }
 
   return (
@@ -40,7 +47,7 @@ function CartDrawer({ xp }) {
           <div className="cart-success">
             <CheckCircle size={48} color="#10b981" />
             <h4>Purchase Complete!</h4>
-            <p>Your items have been added to your account.</p>
+            <p>Your perks have been applied to your academic profile.</p>
           </div>
         ) : (
           <>
@@ -48,7 +55,7 @@ function CartDrawer({ xp }) {
               <div className="cart-empty">
                 <Package size={48} style={{ opacity: 0.3 }} />
                 <p>Your cart is empty</p>
-                <span>Browse the shop and add items!</span>
+                <span>Browse the perks store and add items with your earned XP!</span>
               </div>
             ) : (
               <div className="cart-items">
@@ -57,7 +64,7 @@ function CartDrawer({ xp }) {
                     <span className="cart-item__emoji">{item.emoji}</span>
                     <div className="cart-item__info">
                       <strong>{item.name}</strong>
-                      <span className="xp-tag">{item.price === 0 ? 'FREE' : `${item.price} XP`}</span>
+                      <span className="xp-tag">{item.price} XP</span>
                     </div>
                     <div className="cart-item__qty">
                       <button onClick={() => decrementQty(item.id)}><Minus size={12} /></button>
@@ -84,7 +91,7 @@ function CartDrawer({ xp }) {
               {!canAfford && cartItems.length > 0 && (
                 <div className="cart-warning">
                   <AlertCircle size={14} />
-                  <span>Not enough XP — earn more by completing lessons & quizzes!</span>
+                  <span>Not enough XP ({total - xp} more XP needed). Complete lessons or quizzes to earn XP!</span>
                 </div>
               )}
               <Button
@@ -95,9 +102,13 @@ function CartDrawer({ xp }) {
               >
                 {checkoutState === 'loading' ? (
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Loader size={16} className="spin" /> Processing...
+                    <Loader size={16} className="spin" /> Deducting XP & Unlocking...
                   </span>
-                ) : `Redeem for ${total} XP`}
+                ) : !canAfford ? (
+                  `Need ${total - xp} more XP`
+                ) : (
+                  `Redeem for ${total} XP`
+                )}
               </Button>
               {cartItems.length > 0 && (
                 <button className="cart-clear-btn" onClick={clearCart}>Clear cart</button>
@@ -111,33 +122,59 @@ function CartDrawer({ xp }) {
 }
 
 // This component is used to render an individual product card
-function ProductCard({ item, onAdd, isPurchased }) {
+function ProductCard({ item, onAdd, isPurchased, userXP }) {
   const cartItems = useCartStore((state) => state.cartItems);
   const inCart = cartItems.some((i) => i.id === item.id);
+  const canAfford = userXP >= item.price;
 
   return (
-    <div className={`product-card ${!item.inStock ? 'product-card--disabled' : ''} ${isPurchased ? 'product-card--owned' : ''}`}>
+    <div
+      className={`product-card ${!item.inStock ? 'product-card--disabled' : ''} ${
+        isPurchased ? 'product-card--owned' : ''
+      }`}
+    >
       <div className="product-card__emoji">{item.emoji}</div>
       <div className="product-card__category">{item.category}</div>
       <h4 className="product-card__name">{item.name}</h4>
       <p className="product-card__desc">{item.desc}</p>
+
       <div className="product-card__footer">
-        <span className={`product-card__price ${item.isFree ? 'product-card__price--free' : ''}`}>
-          {item.isFree ? '🎁 FREE' : `${item.price} XP`}
-        </span>
+        <div>
+          <span className="product-card__price">{item.price} XP</span>
+          {!isPurchased && !canAfford && item.inStock && (
+            <div style={{ fontSize: 11, color: '#dc2626', marginTop: 2 }}>
+              Need {item.price - userXP} more XP
+            </div>
+          )}
+        </div>
+
         {isPurchased ? (
-          <span className="product-card__owned"><CheckCircle size={14} /> Owned</span>
+          <span className="product-card__owned">
+            <CheckCircle size={14} /> Owned
+          </span>
         ) : !item.inStock ? (
           <span className="product-card__out">Out of stock</span>
+        ) : !canAfford ? (
+          <button
+            className="product-card__btn"
+            disabled
+            style={{ opacity: 0.6, cursor: 'not-allowed', background: '#f1f5f9', color: '#94a3b8', borderColor: '#cbd5e1' }}
+          >
+            <Lock size={12} /> Locked
+          </button>
         ) : (
           <button
             className={`product-card__btn ${inCart ? 'product-card__btn--in-cart' : ''}`}
             onClick={() => onAdd(item)}
           >
             {inCart ? (
-              <><CheckCircle size={14} /> In Cart</>
+              <>
+                <CheckCircle size={14} /> In Cart
+              </>
             ) : (
-              <><Plus size={14} /> Add</>
+              <>
+                <Plus size={14} /> Add to Cart
+              </>
             )}
           </button>
         )}
@@ -148,7 +185,8 @@ function ProductCard({ item, onAdd, isPurchased }) {
 
 // This component is used to render the XP store page with catalog filters and cart
 export default function ShopPage() {
-  const { student } = useProgress();
+  const { student, spendXP } = useProgress();
+  const { navigate } = useNavigation();
   const { addToCart, toggleCart, getItemCount, purchasedIds } = useCartStore();
   const itemCount = getItemCount();
 
@@ -156,7 +194,7 @@ export default function ShopPage() {
 
   // This hook is used to simulate async fetching of products with loading state
   const { data: products, loading, error, refetch } = useAsyncData(
-    () => fakeAPI(() => SHOP_ITEMS, 1000),
+    () => fakeAPI(() => SHOP_ITEMS, 800),
     []
   );
 
@@ -168,15 +206,17 @@ export default function ShopPage() {
     : [];
 
   return (
-    <PageContainer title="XP Shop">
+    <PageContainer title="Perks Store">
       <div className="shop-header">
         <div>
           <p className="text-secondary" style={{ fontSize: 14 }}>
-            Spend your earned XP on power-ups, themes, and exclusive perks.
+            Spend your earned engineering XP on power-ups, themes, and exclusive perks.
           </p>
-          <div className="shop-xp-balance">
+          <div className="shop-xp-balance" style={{ background: '#ecfdf5', borderColor: '#a7f3d0' }}>
             <span>⚡</span>
-            <span>Your balance: <strong>{student.xp} XP</strong></span>
+            <span style={{ color: '#047857' }}>
+              Your Balance: <strong>{student.xp} XP</strong>
+            </span>
           </div>
         </div>
         <button className="shop-cart-btn" onClick={toggleCart}>
@@ -185,6 +225,36 @@ export default function ShopPage() {
           {itemCount > 0 && <span className="shop-cart-badge">{itemCount}</span>}
         </button>
       </div>
+
+      {/* Helpful banner when user has low or 0 XP */}
+      {student.xp < 45 && (
+        <div
+          style={{
+            margin: '16px 0',
+            padding: '12px 16px',
+            borderRadius: 8,
+            background: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 10,
+          }}
+        >
+          <span style={{ fontSize: 13, color: '#475569' }}>
+            💡 <strong>Need more XP?</strong> Solve interactive lessons and complete technical assessments in the Roadmap to earn XP.
+          </span>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => navigate('codeverse')}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+          >
+            Go to Roadmap <ArrowRight size={13} />
+          </Button>
+        </div>
+      )}
 
       {/* Category filter tabs */}
       <div className="shop-categories">
@@ -236,6 +306,7 @@ export default function ShopPage() {
                 <ProductCard
                   key={item.id}
                   item={item}
+                  userXP={student.xp}
                   onAdd={addToCart}
                   isPurchased={purchasedIds.includes(item.id)}
                 />
@@ -245,7 +316,7 @@ export default function ShopPage() {
         </>
       )}
 
-      <CartDrawer xp={student.xp} />
+      <CartDrawer xp={student.xp} spendXP={spendXP} />
     </PageContainer>
   );
 }

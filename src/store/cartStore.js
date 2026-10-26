@@ -5,7 +5,7 @@ export const SHOP_ITEMS = [
   {
     id: 'boost-xp-2x',
     name: 'XP Double Boost',
-    desc: 'Doubles XP earned on your next quiz attempt.',
+    desc: 'Doubles XP earned on your next technical assessment.',
     price: 80,
     emoji: '⚡',
     category: 'Boosts',
@@ -14,7 +14,7 @@ export const SHOP_ITEMS = [
   {
     id: 'streak-shield',
     name: 'Streak Shield',
-    desc: 'Protects your streak for one missed day. Never lose your streak again!',
+    desc: 'Protects your streak for one missed day of practice.',
     price: 60,
     emoji: '🛡️',
     category: 'Power-ups',
@@ -23,10 +23,28 @@ export const SHOP_ITEMS = [
   {
     id: 'hint-tokens',
     name: 'Hint Tokens x3',
-    desc: 'Reveals a subtle hint during quiz questions when you are stuck.',
+    desc: 'Reveals syntax hints during quiz assessments when you are stuck.',
     price: 45,
     emoji: '💡',
     category: 'Power-ups',
+    inStock: true,
+  },
+  {
+    id: 'mock-interview-pass',
+    name: 'Mock Interview Pass',
+    desc: 'Unlocks a timed frontend mock technical evaluation module.',
+    price: 50,
+    emoji: '🎙️',
+    category: 'Special',
+    inStock: true,
+  },
+  {
+    id: 'badge-frame-emerald',
+    name: 'Emerald Verified Border',
+    desc: 'Adds an emerald verification border around your earned certifications.',
+    price: 120,
+    emoji: '✨',
+    category: 'Cosmetics',
     inStock: true,
   },
   {
@@ -50,40 +68,31 @@ export const SHOP_ITEMS = [
   {
     id: 'title-senior',
     name: '"Lead Architect" Title',
-    desc: 'Displays the exclusive "Lead Architect" credential next to your profile.',
+    desc: 'Displays the exclusive "Lead Architect" credential on your profile.',
     price: 300,
     emoji: '🛠️',
     category: 'Titles',
     inStock: true,
   },
-  {
-    id: 'badge-frame-emerald',
-    name: 'Emerald Verified Border',
-    desc: 'Adds a crisp emerald verification border around your earned certifications.',
-    price: 120,
-    emoji: '✨',
-    category: 'Cosmetics',
-    inStock: true,
-  },
-  {
-    id: 'xp-refill',
-    name: 'XP Starter Pack',
-    desc: 'Instantly adds 25 bonus XP to your account. Perfect for beginners!',
-    price: 0,
-    emoji: '🎁',
-    category: 'Special',
-    inStock: true,
-    isFree: true,
-  },
 ];
 
 export const CATEGORIES = ['All', 'Boosts', 'Power-ups', 'Themes', 'Titles', 'Cosmetics', 'Special'];
+
+// Helper to load purchased IDs from localStorage
+function getInitialPurchasedIds() {
+  try {
+    const saved = localStorage.getItem('codyssey_purchased_perks');
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
 
 // This custom store is used to manage shopping cart state using Zustand
 export const useCartStore = create((set, get) => ({
   cartItems: [],
   isCartOpen: false,
-  purchasedIds: [],
+  purchasedIds: getInitialPurchasedIds(),
 
   // This function is used to add an item to the shopping cart or increment its quantity
   addToCart: (item) => {
@@ -117,11 +126,19 @@ export const useCartStore = create((set, get) => ({
 
   // This function is used to record purchased items and reset the cart
   markPurchased: (ids) =>
-    set((state) => ({
-      purchasedIds: [...state.purchasedIds, ...ids],
-      cartItems: [],
-      isCartOpen: false,
-    })),
+    set((state) => {
+      const updated = Array.from(new Set([...state.purchasedIds, ...ids]));
+      try {
+        localStorage.setItem('codyssey_purchased_perks', JSON.stringify(updated));
+      } catch (e) {
+        console.warn(e);
+      }
+      return {
+        purchasedIds: updated,
+        cartItems: [],
+        isCartOpen: false,
+      };
+    }),
 
   // This function is used to toggle the cart slide-out drawer
   toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),

@@ -9,6 +9,7 @@ import {
   Code2,
 } from 'lucide-react';
 import { useNavigation } from '../../hooks/useNavigation';
+import { useProgress } from '../../hooks/useProgress';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
@@ -20,8 +21,10 @@ const NAV_ITEMS = [
   { page: 'profile',    label: 'Profile',        icon: User },
 ];
 
+// This component is used to render the main navigation sidebar with live XP indicator
 export default function Sidebar() {
   const { currentPage, navigate } = useNavigation();
+  const { student } = useProgress();
 
   return (
     <aside className="sidebar">
@@ -53,6 +56,25 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
+        <div
+          onClick={() => navigate('shop')}
+          style={{
+            padding: '8px 12px',
+            margin: '0 8px 8px 8px',
+            borderRadius: 8,
+            background: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+          }}
+          title="Click to visit Perks Store"
+        >
+          <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>XP Balance</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#047857' }}>⚡ {student.xp} XP</span>
+        </div>
+
         <button
           type="button"
           onClick={() => navigate('settings')}
@@ -65,4 +87,3 @@ export default function Sidebar() {
     </aside>
   );
 }
-

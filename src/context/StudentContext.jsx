@@ -12,6 +12,7 @@ export const StudentContext = createContext(null);
 
 const DEFAULT_STATE = {
   xp: 0,
+  lifetimeXP: 0,
   completedLessonIds: [],
   completedQuestIds: [],
   completedQuizIds: [],
@@ -108,7 +109,9 @@ export function StudentProvider({ children }) {
       });
 
       const updatedQuests = newQuests.length > 0 ? [...prev.completedQuestIds, ...newQuests] : prev.completedQuestIds;
-      const newXP = isNew ? addXP(prev.xp, xpAmount) : prev.xp;
+      const awarded = isNew ? (xpAmount || 20) : 10;
+      const newXP = addXP(prev.xp, awarded);
+      const newLifetimeXP = addXP(prev.lifetimeXP || prev.xp, awarded);
 
       const oldLevel = calculateLevel(prev.xp).level;
       const newLevelObj = calculateLevel(newXP);
@@ -121,6 +124,7 @@ export function StudentProvider({ children }) {
         completedLessonIds: updatedLessons,
         completedQuestIds: updatedQuests,
         xp: newXP,
+        lifetimeXP: newLifetimeXP,
       };
 
       updated = bumpStreak(updated);
@@ -142,6 +146,7 @@ export function StudentProvider({ children }) {
       const quest = questData.find((q) => q.id === questId);
       const reward = quest ? quest.xp : XP_REWARDS.QUEST_COMPLETE;
       const newXP = addXP(prev.xp, reward);
+      const newLifetimeXP = addXP(prev.lifetimeXP || prev.xp, reward);
 
       const oldLevel = calculateLevel(prev.xp).level;
       const newLevelObj = calculateLevel(newXP);
@@ -151,6 +156,7 @@ export function StudentProvider({ children }) {
         ...prev,
         completedQuestIds: [...prev.completedQuestIds, questId],
         xp: newXP,
+        lifetimeXP: newLifetimeXP,
       };
 
       updated = bumpStreak(updated);
@@ -165,7 +171,7 @@ export function StudentProvider({ children }) {
     });
   }
 
-  // This function is used to submit quiz answers, calculate score, and record history
+  // This function is used to submit quiz answers, award XP, and record quiz history
   function submitQuizResult({ skillId, correct, total = 5, questId }) {
     const quizId = questId || `quiz-${skillId}`;
     const score = correct * XP_REWARDS.PER_QUESTION;
@@ -176,11 +182,18 @@ export function StudentProvider({ children }) {
       const prevSkillScores = prev.skillScores || {};
       const previousBest = prevSkillScores[skillId] || 0;
 
-      const gain = Math.max(0, score - previousBest);
+      // Always award XP for correct answers: full gain on new high, or practice XP on re-attempt
+      let gain = 0;
+      if (score > previousBest) {
+        gain = score - previousBest;
+      } else {
+        gain = Math.max(10 * correct, 10);
+      }
       awardedXP = gain;
 
       const newSkillXP = Math.max(previousBest, score);
       const newXP = addXP(prev.xp, gain);
+      const newLifetimeXP = addXP(prev.lifetimeXP || prev.xp, gain);
 
       const oldLevel = calculateLevel(prev.xp).level;
       const newLevelObj = calculateLevel(newXP);
@@ -205,6 +218,7 @@ export function StudentProvider({ children }) {
           [skillId]: newSkillXP,
         },
         xp: newXP,
+        lifetimeXP: newLifetimeXP,
         quizHistory: [
           ...prev.quizHistory,
           {
@@ -236,6 +250,19 @@ export function StudentProvider({ children }) {
     return { awardedXP, score, passed };
   }
 
+  // This function is used to deduct XP when spending in the perks store
+  function spendXP(amount) {
+    if (!amount || amount <= 0) return true;
+    if ((student.xp || 0) < amount) {
+      return false;
+    }
+    setStudent((prev) => ({
+      ...prev,
+      xp: Math.max(0, prev.xp - amount),
+    }));
+    return true;
+  }
+
   // This function is used to update student settings
   function updateSettings(partialSettings) {
     setStudent((prev) => ({ ...prev, settings: { ...prev.settings, ...partialSettings } }));
@@ -251,9 +278,11 @@ export function StudentProvider({ children }) {
     setStudent(DEFAULT_STATE);
   }
 
-  // Skills unlock progressively based on total XP milestones
+  // Skills unlock progressively based on total lifetime XP milestones
+  // (Purchasing items in the perks store does not re-lock previously unlocked skills)
+  const currentThreshold = Math.max(student.lifetimeXP || 0, student.xp || 0);
   const unlockedSkillIds = skills
-    .filter((skill) => (student.xp || 0) >= (skill.requiredXP || 0))
+    .filter((skill) => currentThreshold >= (skill.requiredXP || 0))
     .map((skill) => skill.id);
 
   const levelInfo = calculateLevelProgress(student.xp);
@@ -289,6 +318,7 @@ export function StudentProvider({ children }) {
     completeLesson,
     completeQuest,
     submitQuizResult,
+    spendXP,
     updateSettings,
     setOnboarding,
     resetProgress,
