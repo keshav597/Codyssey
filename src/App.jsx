@@ -14,29 +14,26 @@ import SettingsPage from './pages/SettingsPage';
 import ShopPage from './pages/ShopPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// Root of the SPA: public pages first, then protected pages (login required), then 404
 export default function App() {
   return (
     <Routes>
-      {/* Public routes */}
+      
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
 
-      {/* Protected routes (nested inside ProtectedRoute) */}
       <Route element={<ProtectedRoute />}>
         <Route path="/setup" element={<SetupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/codeverse" element={<CodeversePage />} />
         <Route path="/quiz" element={<AssessmentPage />} />
-        <Route path="/quiz/:skillId" element={<AssessmentPage />} /> {/* dynamic route */}
+        <Route path="/quiz/:skillId" element={<AssessmentPage />} /> 
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/shop" element={<ShopPage />} />
       </Route>
 
-      {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

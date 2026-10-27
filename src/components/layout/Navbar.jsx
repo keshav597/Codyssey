@@ -3,7 +3,6 @@ import { useProgress } from '../../hooks/useProgress';
 import XPCounter from '../common/XPCounter';
 import './Navbar.css';
 
-// This component is used to render the top navigation bar with streak, live XP, and level
 export default function Navbar({ title }) {
   const { student, levelInfo } = useProgress();
 
